@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Alumni Batches</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{font-family:Poppins,sans-serif;background:#f1f5f9;padding:30px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,.1);cursor:pointer}
+.card img{width:100%;height:180px;object-fit:cover}
+.card h3{margin:15px}
+.card p{margin:0 15px 15px;color:#555}
+</style>
+</head>
+
+<body>
+
+<h1>🎓 Alumni Batches</h1>
+<div class="grid" id="batches">Loading...</div>
+<script>
+const container = document.getElementById("batches");
+
+fetch("/api/batches")
+  .then(res => res.json())
+  .then(data => {
+    if (!data.length) {
+      container.innerHTML = "<p>No batches found</p>";
+      return;
+    }
+
+    container.innerHTML = data.map(b => `
+      <div class="card" onclick="openBatch(${b.year})" style="cursor:pointer">
+        <img src="${b.imageUrl}">
+        <h3>Batch of ${b.year}</h3>
+        <p>${b.title ?? ""}</p>
+      </div>
+    `).join("");
+  });
+
+function openBatch(year){
+  // ✅ THIS IS CRITICAL
+  window.location.href = "alumni-list.html?year=" + year;
+}
+</script>
+
+</body>
+</html>

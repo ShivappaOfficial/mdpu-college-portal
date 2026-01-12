@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Create Batch</title>
+<style>
+body{
+  background:#0f172a;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  font-family:Poppins;
+}
+.card{
+  background:#1e293b;
+  padding:30px;
+  width:360px;
+  border-radius:16px;
+  color:white;
+}
+input,button{
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border-radius:10px;
+  border:none;
+}
+button{
+  background:#22d3ee;
+  font-weight:600;
+}
+.error{color:#fca5a5;}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Create New Batch</h2>
+  <div class="error" id="error"></div>
+
+  <input type="number" id="year" placeholder="Batch Year" required>
+  <input type="text" id="title" placeholder="Batch Title (optional)">
+  <input type="file" id="image" required>
+
+  <button onclick="createBatch()">Create Batch</button>
+</div>
+
+<script>
+async function createBatch(){
+  const year = document.getElementById("year").value;
+  const title = document.getElementById("title").value;
+  const image = document.getElementById("image").files[0];
+  const error = document.getElementById("error");
+
+  if(!year || !image){
+    error.innerText = "Year & image required";
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("year", year);
+  formData.append("title", title);
+  formData.append("image", image);
+
+  const token = localStorage.getItem("token");
+	console.log(token);
+	
+  try{
+    const res = await fetch("/api/batches/create",{
+      method:"POST",
+      headers:{
+        "Authorization":"Bearer "+token
+      },
+      body:formData
+    });
+      console.log("Authorised With Bearer Token");
+      
+    if(!res.ok) throw new Error();
+    alert("Batch Created Successfully");
+    console.log("Batch Created Successfully");
+     // ✅ Redirect after success
+    window.location.href = "/alumni-showcase.html";
+  }catch{
+    error.innerText="Batch already exists or unauthorized";
+     console.log("Batch Not Created Successfully");
+  }
+}
+</script>
+
+</body>
+</html>

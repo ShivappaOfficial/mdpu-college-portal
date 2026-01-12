@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<script>
+/* ================= AUTH CHECK ================= */
+const token = localStorage.getItem("token");
+
+if (!token) {
+    alert("Please login first");
+    window.location.href = "/admin.html";
+}
+</script>
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+  <!--  <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Employee Management</h2>
+        <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+    </div>-->
+
+    <!-- FORM -->
+    <div class="card p-4 mb-4">
+        <input type="hidden" id="empId">
+
+        <input class="form-control mb-1" id="name" placeholder="Name">
+        <small class="text-danger" id="nameError"></small>
+
+        <input class="form-control mb-1" id="email" placeholder="Email">
+        <small class="text-danger" id="emailError"></small>
+
+        <input class="form-control mb-1" id="role" placeholder="Role">
+        <small class="text-danger" id="roleError"></small>
+
+        <input type="number" class="form-control mb-2" id="salary" placeholder="Salary">
+        <small class="text-danger" id="salaryError"></small>
+
+        <button type="button"
+                id="saveBtn"
+                class="btn btn-primary w-100 mt-2"
+                onclick="saveEmployee()">
+            Save
+        </button>
+    </div>
+
+    <!-- TABLE -->
+    <table class="table table-bordered text-center align-middle">
+        <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Salary</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="list"></tbody>
+    </table>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const API = "/api/employees";
+
+/* ================= DOM ================= */
+const empId = document.getElementById("empId");
+const nameInput = document.getElementById("name");
+const emailInput = document.getElementById("email");
+const roleInput = document.getElementById("role");
+const salaryInput = document.getElementById("salary");
+
+const nameError = document.getElementById("nameError");
+const emailError = document.getElementById("emailError");
+const roleError = document.getElementById("roleError");
+const salaryError = document.getElementById("salaryError");
+
+const list = document.getElementById("list");
+const saveBtn = document.getElementById("saveBtn");
+
+/* ================= HELPERS ================= */
+
+function clearErrors() {
+    nameError.innerText = "";
+    emailError.innerText = "";
+    roleError.innerText = "";
+    salaryError.innerText = "";
+}
+
+function resetForm() {
+    empId.value = "";
+    nameInput.value = "";
+    emailInput.value = "";
+    roleInput.value = "";
+    salaryInput.value = "";
+    saveBtn.innerText = "Save";
+}
+
+/* ================= LOGOUT ================= */
+
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/admin.html";
+    console.log("Logged Out: From admin Page");
+
+}
+
+
+/* ================= SAVE / UPDATE ================= */
+
+function saveEmployee() {
+
+    clearErrors();
+
+    const employee = {
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim(),
+        role: roleInput.value.trim(),
+        salary: salaryInput.value ? parseInt(salaryInput.value) : null
+    };
+
+    let valid = true;
+    if (!employee.name) { nameError.innerText = "Name is required"; valid = false; }
+    if (!employee.email) { emailError.innerText = "Email is required"; valid = false; }
+    if (!employee.role) { roleError.innerText = "Role is required"; valid = false; }
+    if (employee.salary === null) { salaryError.innerText = "Salary is required"; valid = false; }
+
+    if (!valid) return;
+
+    const id = empId.value;
+
+    fetch(id ? `${API}/${id}` : API, {
+        method: id ? "PUT" : "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify(employee)
+    })
+   // .then(res => {
+   //     if (res.status === 401) logout();
+   //     return res.json();
+   // })
+   
+   .then(res => {
+    if (res.status === 401 || res.status === 403) {
+        alert("Session expired. Please login again.");
+        logout();
+        return;
+    }
+    return res.json();
+})
+
+    .then(() => {
+        alert(id ? "Employee updated successfully ✅" : "Employee saved successfully ✅");
+        console.log("TOKEN:", token);
+        resetForm();
+        loadEmployees();
+    });
+}
+
+/* ================= LOAD ================= */
+
+function loadEmployees() {
+    fetch(API, {
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    })
+    .then(res => {
+        if (res.status === 401) logout();
+        return res.json();
+    })
+    .then(data => {
+        list.innerHTML = "";
+        data.forEach((e, index) => {
+            list.innerHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${e.id}</td>
+                <td>${e.name}</td>
+                <td>${e.email}</td>
+                <td>${e.role}</td>
+                <td>${e.salary}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-1"
+                        onclick="editEmployee(${e.id}, '${e.name}', '${e.email}', '${e.role}', '${e.salary}')">
+                        Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm"
+                        onclick="deleteEmployee(${e.id})">
+                        Delete
+                    </button>
+                </td>
+            </tr>`;
+        });
+    });
+}
+
+/* ================= EDIT ================= */
+
+function editEmployee(id, name, email, role, salary) {
+    empId.value = id;
+    nameInput.value = name;
+    emailInput.value = email;
+    roleInput.value = role;
+    salaryInput.value = salary;
+    saveBtn.innerText = "Update";
+}
+
+/* ================= DELETE ================= */
+
+function deleteEmployee(id) {
+    if (!confirm("Are you sure you want to delete?")) return;
+
+    fetch(`${API}/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": "Bearer " + token
+        }
+    })
+    .then(() => loadEmployees());
+}
+
+/* ================= INIT ================= */
+loadEmployees();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e40af, #0f172a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  width: 360px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(15px);
+  border-radius: 18px;
+  padding: 35px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  color: white;
+}
+
+.login-card h2 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.input-group {
+  margin-bottom: 18px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  background: #facc15;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.msg {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+}
+.success { color: #22c55e; }
+.error { color: #ef4444; }
+</style>
+</head>
+
+<body>
+
+<div class="login-card">
+  <h2>Admin Login</h2>
+
+  <div class="input-group">
+    <input type="text" id="username" placeholder="Username">
+  </div>
+
+  <div class="input-group">
+    <input type="password" id="password" placeholder="Password">
+  </div>
+
+  <button onclick="login()">Login</button>
+  <div class="msg" id="msg"></div>
+</div>
+<script>
+function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const msg = document.getElementById("msg");
+
+  if (!username || !password) {
+    msg.innerText = "Username and password required";
+    msg.className = "msg error";
+    return;
+  }
+
+  fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Invalid credentials");
+    return res.json();
+  })
+  .then(data => {
+    // ✅ SAVE TOKEN
+    localStorage.setItem("token", data.token);
+
+    msg.innerText = "Login successful!";
+    msg.className = "msg success";
+
+    // ✅ ALWAYS redirect to layout (NOT dashboard)
+    setTimeout(() => {
+      window.location.href = "/admin-layout.html";
+    }, 500);
+  })
+  .catch(() => {
+    msg.innerText = "Invalid username or password";
+    msg.className = "msg error";
+  });
+}
+</script>
+
+
+</body>
+</html>

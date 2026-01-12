@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin – Alumni Approval</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  font-family:Poppins,sans-serif;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  min-height:100vh;
+  margin:0;
+  padding:30px;
+  color:white;
+}
+
+h2{text-align:center;margin-bottom:20px}
+
+.table-card{
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(12px);
+  border-radius:16px;
+  padding:20px;
+  max-width:1100px;
+  margin:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:12px;
+  text-align:center;
+}
+
+th{
+  background:rgba(0,0,0,.3);
+}
+
+tr{
+  border-bottom:1px solid rgba(255,255,255,.2);
+}
+
+button{
+  padding:6px 12px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.approve{
+  background:#22c55e;
+  color:white;
+}
+
+.delete{
+  background:#ef4444;
+  color:white;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🎓 Alumni Approval Panel</h2>
+
+<div class="table-card">
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Combination</th>
+  <th>Year</th>
+  <th>Designation</th>
+  <th>Action</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<script>
+const token = localStorage.getItem("token"); // admin JWT
+
+async function loadPending(){
+  const res = await fetch("/api/admin/alumni/pending",{
+    headers:{ "Authorization":"Bearer "+token }
+  });
+  const data = await res.json();
+
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML = "";
+
+  data.forEach(a=>{
+    tbody.innerHTML += `
+      <tr>
+        <td>${a.name}</td>
+        <td>${a.combination}</td>
+        <td>${a.yearOfPassout}</td>
+        <td>${a.designation}</td>
+        <td>
+          <button class="approve" onclick="approve(${a.id})">Approve</button>
+          <button class="delete" onclick="remove(${a.id})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+async function approve(id){
+  await fetch(`/api/admin/alumni/${id}/approve`,{
+    method:"PUT",
+    headers:{ "Authorization":"Bearer "+token }
+  });
+  loadPending();
+}
+
+async function remove(id){
+  if(!confirm("Delete alumni?")) return;
+  await fetch(`/api/admin/alumni/${id}`,{
+    method:"DELETE",
+    headers:{ "Authorization":"Bearer "+token }
+  });
+  loadPending();
+}
+
+loadPending();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Alumni Batches – MDR PU College</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Poppins,sans-serif;
+  background:#f1f5f9;
+  margin:0;
+  padding:0;
+}
+
+header{
+  background:#1e40af;
+  color:white;
+  padding:20px;
+  text-align:center;
+}
+
+header h1{
+  margin:0;
+  font-size:28px;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:30px 20px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:25px;
+}
+
+.card{
+  background:white;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+}
+
+.card img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+}
+
+.card-content{
+  padding:18px;
+}
+
+.card h3{
+  margin:0 0 8px;
+  font-size:22px;
+  color:#1e40af;
+}
+
+.card p{
+  margin:0;
+  font-size:14px;
+  color:#555;
+}
+
+.empty{
+  text-align:center;
+  font-size:18px;
+  color:#666;
+}
+
+footer{
+  background:#0f172a;
+  color:white;
+  text-align:center;
+  padding:15px;
+  margin-top:40px;
+}
+
+@media(max-width:600px){
+  header h1{
+    font-size:22px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🎓 Alumni Batches</h1>
+  <p>MDR PU College – Hiresindhogi</p>
+</header>
+
+<div class="container">
+  <div class="grid" id="batches">
+    Loading batches...
+  </div>
+  
+</div>
+
+
+<footer>
+  © 2026 MDR PU College | Alumni Network
+</footer>
+
+<script>
+const batchesDiv = document.getElementById("batches");
+
+fetch("/api/batches")
+  .then(res => {
+    if(!res.ok) throw new Error("Failed");
+    return res.json();
+  })
+  .then(data => {
+
+    if(!data || data.length === 0){
+      batchesDiv.innerHTML = "<div class='empty'>No batches available</div>";
+      return;
+    }
+
+    batchesDiv.innerHTML = data.map(b => `
+      <div class="card">
+        <img src="${b.imageUrl}" alt="Batch ${b.year}">
+        <div class="card-content">
+          <h3>Batch of ${b.year}</h3>
+          <p>${b.title ?? ""}</p>
+        </div>
+      </div>
+    `).join("");
+
+  })
+  .catch(() => {
+    batchesDiv.innerHTML = "<div class='empty'>Error loading batches</div>";
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Admission</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family: Poppins, sans-serif;
+  background: linear-gradient(135deg,#1e3c72,#2a5298);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+.card {
+  background:#4a6598;
+  padding:30px;
+  border-radius:35px;
+  width:360px;
+  color:white;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+h2 {
+  text-align:center;
+  margin-bottom:15px;
+}
+
+input, select, textarea {
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border:none;
+  border-radius:10px;
+  font-size:14px;
+}
+
+textarea {
+  resize:none;
+  height:80px;
+}
+
+button {
+  width:100%;
+  padding:12px;
+  background:#00eaff;
+  border:none;
+  border-radius:12px;
+  font-weight:600;
+  cursor:pointer;
+  font-size:15px;
+}
+
+button:disabled {
+  background:gray;
+  cursor:not-allowed;
+}
+
+.error {
+  color:#ffb3b3;
+  font-size:13px;
+  margin-bottom:10px;
+  text-align:center;
+}
+
+/* POPUP */
+.popup {
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.6);
+}
+
+.popup-content {
+  background:white;
+  color:black;
+  padding:25px;
+  border-radius:14px;
+  text-align:center;
+  width:280px;
+}
+
+.popup-content h3 {
+  margin-bottom:10px;
+}
+
+.popup-content button {
+  margin-top:15px;
+  background:#2a5298;
+  color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Student Admission</h2>
+
+  <div class="error" id="error"></div>
+
+  <form id="admissionForm">
+    <input id="name" placeholder="Student Name" required>
+    <input id="mobile" placeholder="Mobile Number" required>
+    <input id="email" placeholder="Email">
+
+    <select id="course" required >
+      <option value="">Select Course</option>
+      <option>PCMB</option>
+      <option>PCMC</option>
+      <option>Arts</option>
+    </select>
+
+    <textarea id="address" placeholder="Address"></textarea>
+
+    <button id="submitBtn" type="submit">Submit Application</button>
+  </form>
+</div>
+
+<!-- SUCCESS POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <h3>✅ Admission Submitted</h3>
+    <p id="admissionId"></p>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
+
+<script>
+const form = document.getElementById("admissionForm");
+const btn = document.getElementById("submitBtn");
+const errorBox = document.getElementById("error");
+const popup = document.getElementById("popup");
+const admissionIdText = document.getElementById("admissionId");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  errorBox.innerText = "";
+
+  const data = {
+    name: document.getElementById("name").value.trim(),
+    mobile: document.getElementById("mobile").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    course: document.getElementById("course").value,
+    address: document.getElementById("address").value.trim()
+  };
+
+  if (!data.name || !data.mobile || !data.course) {
+    errorBox.innerText = "Please fill all required fields";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerText = "Saving...";
+
+  try {
+    const res = await fetch("http://localhost:8080/api/admissions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+      throw new Error("Server error");
+    }
+
+    const result = await res.json();
+    admissionIdText.innerText = "Admission ID: " + result.id;
+    popup.style.display = "flex";
+    form.reset();
+
+  } catch (err) {
+    errorBox.innerText = "Submission failed. Please try again.";
+  } finally {
+    btn.disabled = false;
+    btn.innerText = "Submit Application";
+  }
+});
+
+function closePopup() {
+  popup.style.display = "none";
+}
+</script>
+
+</body>
+</html>

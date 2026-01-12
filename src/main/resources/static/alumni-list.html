@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Batch Alumni</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family:Poppins,sans-serif;
+  background:#f8fafc;
+  padding:20px;
+}
+
+h2{
+  margin-bottom:20px;
+  color:#1e40af;
+}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+
+thead{
+  background:#1e40af;
+  color:white;
+}
+
+th, td{
+  padding:12px 14px;
+  text-align:left;
+}
+
+th{
+  font-weight:600;
+  font-size:14px;
+}
+
+tbody tr{
+  border-bottom:1px solid #e5e7eb;
+}
+
+tbody tr:hover{
+  background:#f1f5f9;
+}
+
+tbody tr:last-child{
+  border-bottom:none;
+}
+
+.empty{
+  padding:20px;
+  background:white;
+  border-radius:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width:600px){
+  table, thead, tbody, th, td, tr{
+    display:block;
+  }
+
+  thead{
+    display:none;
+  }
+
+  tr{
+    margin-bottom:15px;
+    background:white;
+    border-radius:12px;
+    box-shadow:0 6px 20px rgba(0,0,0,.1);
+    padding:10px;
+  }
+
+  td{
+    padding:8px;
+  }
+
+  td::before{
+    content:attr(data-label);
+    font-weight:600;
+    color:#1e40af;
+    display:block;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h2 id="title">🎓 Batch Alumni</h2>
+
+<div id="list">Loading...</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const year = params.get("year");
+
+const title = document.getElementById("title");
+const list = document.getElementById("list");
+
+/* ✅ STOP if year missing */
+if (!year) {
+  title.innerText = "❌ Batch Not Selected";
+  list.innerHTML = "Please select a batch from Alumni Batches page";
+  throw new Error("Year is missing in URL");
+}
+
+title.innerText = `🎓 Batch of ${year}`;
+
+fetch(`/api/alumni/public/by-year/${year}`)
+  .then(res => {
+    if (!res.ok) throw new Error("Forbidden or error");
+    return res.json();
+  })
+  .then(data => {
+    if (!data.length) {
+      list.innerHTML = "No alumni found for this batch";
+      return;
+    }
+
+    list.innerHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Combination</th>
+            <th>Designation</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.map((a,i)=>`
+            <tr>
+              <td>${i+1}</td>
+              <td>${a.name}</td>
+              <td>${a.combination}</td>
+              <td>${a.designation}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  })
+  .catch(err => {
+    list.innerHTML = "Error loading alumni list";
+    console.error(err);
+  });
+</script>
+
+
+</body>
+</html>

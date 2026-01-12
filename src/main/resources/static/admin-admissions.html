@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Admissions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+body{
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    min-height:100vh;
+    color:#fff;
+}
+
+.glass{
+    background: rgba(255,255,255,.12);
+    backdrop-filter: blur(12px);
+    border-radius:16px;
+    padding:20px;
+}
+
+table th{
+    background:#1e3c72 !important;
+    color:white;
+}
+
+.btn-delete{
+    background:#ff4d4d;
+    color:white;
+    border:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container py-4">
+
+<h4 class="fw-bold mb-3">📋 Admission Applications</h4>
+
+<div class="glass">
+
+<button class="btn btn-success mb-3" onclick="exportExcel()">
+    <i class="bi bi-download"></i> Export Excel
+</button>
+
+<div class="table-responsive">
+<table class="table table-bordered table-hover text-center align-middle">
+<thead>
+<tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Mobile</th>
+    <th>Email</th>
+    <th>Course</th>
+    <th>Action</th>
+</tr>
+</thead>
+<tbody id="tableBody">
+<tr><td colspan="6">Loading...</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
+
+<script>
+const token = localStorage.getItem("token");
+
+fetch("/api/admissions", {
+    headers: {
+        "Authorization": "Bearer " + token
+    }
+})
+.then(res => {
+    if(!res.ok) throw new Error("Unauthorized or API Error");
+    return res.json();
+})
+.then(data => {
+    const tbody = document.getElementById("tableBody");
+    tbody.innerHTML = "";
+
+    if(data.length === 0){
+        tbody.innerHTML = `<tr><td colspan="6">No Applications Found</td></tr>`;
+        return;
+    }
+
+    data.forEach(a => {
+        tbody.innerHTML += `
+        <tr>
+            <td>${a.id}</td>
+            <td>${a.name}</td>
+            <td>${a.mobile}</td>
+            <td>${a.email}</td>
+            <td>${a.course}</td>
+            <td>
+                <button class="btn btn-delete btn-sm" onclick="del(${a.id})">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>`;
+    });
+})
+.catch(err=>{
+    document.getElementById("tableBody").innerHTML =
+    `<tr><td colspan="6">❌ ${err.message}</td></tr>`;
+});
+
+function del(id){
+    if(!confirm("Delete admission?")) return;
+
+    fetch(`/api/admissions/${id}`, {
+        method:"DELETE",
+        headers:{
+            "Authorization":"Bearer "+token
+        }
+    }).then(()=>location.reload());
+}
+</script>
+
+</body>
+</html>
