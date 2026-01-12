@@ -17,6 +17,9 @@ public class Admin {
     // ✅ ADD THIS
     private String role;
 
+    @Column(nullable = false)
+    private boolean active;
+
     // ===== GETTERS & SETTERS =====
 
     public Long getId() {
@@ -51,4 +54,12 @@ public class Admin {
     public void setRole(String role) {
         this.role = role;
     }
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 }
