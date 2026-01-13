@@ -75,7 +75,7 @@ public class SecurityConfig {
 
                 // ===== ADMIN =====
                 .requestMatchers(HttpMethod.POST, "/api/batches/create").authenticated()
-
+                .requestMatchers("/", "/health").permitAll()
                 // ===== ALL OTHER APIs =====
                 .requestMatchers("/api/**").authenticated()
 
