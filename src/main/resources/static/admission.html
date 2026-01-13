@@ -8,9 +8,7 @@
 <style>
 :root{
   --primary:#4f46e5;
-  --bg:#0f2027;
 }
-
 *{box-sizing:border-box;font-family:Segoe UI,system-ui}
 
 body{
@@ -20,7 +18,7 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  padding:20px;
+  padding:16px;
   color:#fff;
 }
 
@@ -30,34 +28,27 @@ body{
   background:rgba(255,255,255,.12);
   backdrop-filter:blur(14px);
   border-radius:18px;
-  padding:25px;
+  padding:22px;
 }
 
-h2{text-align:center;margin-bottom:15px}
+h2{text-align:center;margin-bottom:10px}
 
-/* Progress */
 .progress{
-  height:8px;
-  background:rgba(255,255,255,.2);
-  border-radius:10px;
-  overflow:hidden;
-  margin-bottom:25px;
+  height:8px;background:rgba(255,255,255,.2);
+  border-radius:10px;overflow:hidden;margin-bottom:18px
 }
 .progress-bar{
-  height:100%;
-  width:50%;
-  background:linear-gradient(90deg,#4f46e5,#22c55e);
-  transition:.3s;
+  height:100%;width:50%;
+  background:linear-gradient(90deg,#4f46e5,#22c55e)
 }
 
-/* Steps */
 .step{display:none}
 .step.active{display:block}
 
 .grid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:15px;
+  gap:12px;
 }
 
 input,select{
@@ -72,11 +63,11 @@ input[readonly]{background:#e5e7eb}
 .btns{
   display:flex;
   justify-content:space-between;
-  margin-top:25px;
+  margin-top:20px;
 }
 
 button{
-  padding:12px 22px;
+  padding:12px 20px;
   border:none;
   border-radius:12px;
   background:#4f46e5;
@@ -134,37 +125,34 @@ button.secondary{background:#64748b}
 <!-- STEP 2 -->
 <div class="step" id="step2">
 
-  <h4>📚 Subject-wise Marks</h4>
-  <div id="subjects">
-    <div class="subject-row">
-      <input placeholder="Subject" value="Kannada">
-      <input type="number" placeholder="Marks">
-    </div>
-    <div class="subject-row">
-      <input placeholder="Subject" value="English">
-      <input type="number" placeholder="Marks">
-    </div>
-  </div>
+<h4>📚 Subject-wise Marks</h4>
 
-  <button type="button" class="secondary" onclick="addSubject()">➕ Add Subject</button>
-
-  <div class="grid" style="margin-top:15px">
-    <input type="number" id="obtainedMarks" placeholder="Obtained Marks *" required oninput="calc()">
-    <input type="number" id="totalMarks" value="625" readonly>
-    <input id="percentage" placeholder="Percentage" readonly>
-    <select id="combination" required>
-      <option value="">Select Combination</option>
-      <option>PCMB</option>
-      <option>PCMC</option>
-    </select>
-  </div>
-
-  <div class="btns">
-    <button type="button" class="secondary" onclick="prevStep()">← Back</button>
-    <button type="submit">🚀 Submit</button>
-  </div>
+<div id="subjects">
+  <div class="subject-row"><input value="Kannada" readonly><input type="number" oninput="calc()"></div>
+  <div class="subject-row"><input value="English" readonly><input type="number" oninput="calc()"></div>
+  <div class="subject-row"><input value="Hindi" readonly><input type="number" oninput="calc()"></div>
+  <div class="subject-row"><input value="Mathematics" readonly><input type="number" oninput="calc()"></div>
+  <div class="subject-row"><input value="Science" readonly><input type="number" oninput="calc()"></div>
+  <div class="subject-row"><input value="Social Science" readonly><input type="number" oninput="calc()"></div>
 </div>
 
+<div class="grid" style="margin-top:14px">
+  <input type="number" id="obtainedMarks" placeholder="Total Obtained Marks *" required oninput="calc()">
+  <input type="number" id="totalMarks" value="625" readonly>
+  <input id="percentage" placeholder="Percentage" readonly>
+  <select id="combination" required>
+    <option value="">Select Combination</option>
+    <option>PCMB</option>
+    <option>PCMC</option>
+  </select>
+</div>
+
+<div class="btns">
+  <button type="button" class="secondary" onclick="prevStep()">← Back</button>
+  <button type="submit">🚀 Submit</button>
+</div>
+
+</div>
 </form>
 </div>
 
@@ -172,45 +160,41 @@ button.secondary{background:#64748b}
 let step=1;
 
 function nextStep(){
+  step=2;
   document.getElementById("step1").classList.remove("active");
   document.getElementById("step2").classList.add("active");
   document.getElementById("progressBar").style.width="100%";
 }
 function prevStep(){
+  step=1;
   document.getElementById("step2").classList.remove("active");
   document.getElementById("step1").classList.add("active");
   document.getElementById("progressBar").style.width="50%";
 }
 
-function addSubject(){
-  const div=document.createElement("div");
-  div.className="subject-row";
-  div.innerHTML=`<input placeholder="Subject"><input type="number" placeholder="Marks">`;
-  document.getElementById("subjects").appendChild(div);
-}
-
 function calc(){
-  const o=obtainedMarks.value,t=totalMarks.value;
-  if(o) percentage.value=((o/t)*100).toFixed(2);
+  const o=document.getElementById("obtainedMarks").value;
+  const t=document.getElementById("totalMarks").value;
+  if(o) document.getElementById("percentage").value=((o/t)*100).toFixed(2);
 }
 
-/* SUBMIT */
 document.getElementById("admissionForm").onsubmit=e=>{
   e.preventDefault();
 
   const data={
-    name: document.getElementById("name").value,
-    fatherName: fatherName.value,
-    motherName: motherName.value,
-    dob: dob.value,
-    mobile: mobile.value,
-    familyMobile: familyMobile.value,
-    email: email.value,
-    satsId: satsId.value,
-    sslcRegNo: sslcRegNo.value,
+    name:name.value,
+    fatherName:fatherName.value,
+    motherName:motherName.value,
+    dob:dob.value,
+    mobile:mobile.value,
+    familyMobile:familyMobile.value,
+    email:email.value,
+    satsId:satsId.value,
+    sslcRegNo:sslcRegNo.value,
     obtainedMarks:+obtainedMarks.value,
     totalMarks:+totalMarks.value,
-    combination: combination.value,
+    percentage:+percentage.value,
+    combination:combination.value,
     permanentAddress:"NA",
     residentialAddress:"NA"
   };

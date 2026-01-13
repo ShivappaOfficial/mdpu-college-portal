@@ -64,6 +64,7 @@ public class AdmissionService {
 
         // ✅ Send confirmation mail
         sendMail(saved);
+        System.out.println("mail Sent Successfully");
 
         return saved;
     }

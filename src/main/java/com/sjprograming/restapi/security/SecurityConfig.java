@@ -72,6 +72,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/alumni").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/alumni/public/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/batches").permitAll()
+             // PUBLIC ADMISSION APIs
+                .requestMatchers(HttpMethod.POST, "/api/admission/apply").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/admission/status").permitAll()
 
                 // ===== ADMIN =====
                 .requestMatchers(HttpMethod.POST, "/api/batches/create").authenticated()
