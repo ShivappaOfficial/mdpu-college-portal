@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sjprograming.restapi.batch.model.Batch;
 import com.sjprograming.restapi.batch.service.BatchService;
+import com.sjprograming.restapi.cloudinary.service.CloudinaryService;
 
 @RestController
 @RequestMapping("/api/batches")
@@ -15,9 +16,12 @@ import com.sjprograming.restapi.batch.service.BatchService;
 public class BatchController {
 
     private final BatchService service;
+    private final CloudinaryService cloudinaryService;
 
-    public BatchController(BatchService service) {
+    public BatchController(BatchService service,
+                           CloudinaryService cloudinaryService) {
         this.service = service;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
@@ -27,19 +31,13 @@ public class BatchController {
             @RequestParam MultipartFile image
     ) throws Exception {
 
-        // ✅ PUBLIC STATIC PATH
-        String folder = "src/main/resources/static/uploads/batches/" + year;
-        Files.createDirectories(Paths.get(folder));
-
-        String fileName = "batch_" + year + "_" + image.getOriginalFilename();
-        Path path = Paths.get(folder, fileName);
-
-        Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+        // ✅ Upload to Cloudinary
+        String imageUrl = cloudinaryService.upload(image, "batches");
 
         Batch batch = new Batch();
         batch.setYear(year);
         batch.setTitle(title);
-        batch.setImageUrl("/uploads/batches/" + year + "/" + fileName);
+        batch.setImageUrl(imageUrl);
 
         return service.create(batch);
     }
