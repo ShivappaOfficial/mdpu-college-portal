@@ -20,18 +20,20 @@ public class BatchController {
         this.service = service;
     }
 
-    @PostMapping(value="/create", consumes="multipart/form-data")
+    @PostMapping(value = "/create", consumes = "multipart/form-data")
     public Batch create(
             @RequestParam int year,
-            @RequestParam(required=false) String title,
+            @RequestParam(required = false) String title,
             @RequestParam MultipartFile image
     ) throws Exception {
 
-        String folder = "uploads/batches/" + year;
+        // ✅ PUBLIC STATIC PATH
+        String folder = "src/main/resources/static/uploads/batches/" + year;
         Files.createDirectories(Paths.get(folder));
 
         String fileName = "batch_" + year + "_" + image.getOriginalFilename();
         Path path = Paths.get(folder, fileName);
+
         Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
         Batch batch = new Batch();
