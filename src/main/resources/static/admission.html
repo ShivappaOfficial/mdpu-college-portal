@@ -2,98 +2,100 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Student Admission</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<title>PU College Admission</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  font-family: Poppins, sans-serif;
-  background: linear-gradient(135deg,#1e3c72,#2a5298);
+:root{
+  --primary:#4f46e5;
+  --bg:#0f2027;
+}
+
+*{box-sizing:border-box;font-family:Segoe UI,system-ui}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   display:flex;
   justify-content:center;
   align-items:center;
-  min-height:100vh;
+  padding:20px;
+  color:#fff;
 }
 
-.card {
-  background:#4a6598;
-  padding:30px;
-  border-radius:35px;
-  width:360px;
-  color:white;
-  box-shadow:0 10px 30px rgba(0,0,0,0.3);
-}
-
-h2 {
-  text-align:center;
-  margin-bottom:15px;
-}
-
-input, select, textarea {
+.card{
   width:100%;
-  padding:12px;
-  margin-bottom:12px;
-  border:none;
+  max-width:900px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(14px);
+  border-radius:18px;
+  padding:25px;
+}
+
+h2{text-align:center;margin-bottom:15px}
+
+/* Progress */
+.progress{
+  height:8px;
+  background:rgba(255,255,255,.2);
   border-radius:10px;
-  font-size:14px;
+  overflow:hidden;
+  margin-bottom:25px;
+}
+.progress-bar{
+  height:100%;
+  width:50%;
+  background:linear-gradient(90deg,#4f46e5,#22c55e);
+  transition:.3s;
 }
 
-textarea {
-  resize:none;
-  height:80px;
+/* Steps */
+.step{display:none}
+.step.active{display:block}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
 }
 
-button {
-  width:100%;
+input,select{
   padding:12px;
-  background:#00eaff;
+  border-radius:10px;
+  border:none;
+  outline:none;
+}
+
+input[readonly]{background:#e5e7eb}
+
+.btns{
+  display:flex;
+  justify-content:space-between;
+  margin-top:25px;
+}
+
+button{
+  padding:12px 22px;
   border:none;
   border-radius:12px;
+  background:#4f46e5;
+  color:white;
   font-weight:600;
   cursor:pointer;
-  font-size:15px;
 }
 
-button:disabled {
-  background:gray;
-  cursor:not-allowed;
-}
+button.secondary{background:#64748b}
 
-.error {
-  color:#ffb3b3;
-  font-size:13px;
-  margin-bottom:10px;
-  text-align:center;
-}
-
-/* POPUP */
-.popup {
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,0.6);
-}
-
-.popup-content {
-  background:white;
-  color:black;
-  padding:25px;
-  border-radius:14px;
-  text-align:center;
-  width:280px;
-}
-
-.popup-content h3 {
+.subject-row{
+  display:flex;
+  gap:10px;
   margin-bottom:10px;
 }
+.subject-row input{flex:1}
 
-.popup-content button {
-  margin-top:15px;
-  background:#2a5298;
-  color:white;
+@media(max-width:768px){
+  .grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -101,93 +103,130 @@ button:disabled {
 <body>
 
 <div class="card">
-  <h2>Student Admission</h2>
+<h2>🎓 PU College Admission</h2>
 
-  <div class="error" id="error"></div>
-
-  <form id="admissionForm">
-    <input id="name" placeholder="Student Name" required>
-    <input id="mobile" placeholder="Mobile Number" required>
-    <input id="email" placeholder="Email">
-
-    <select id="course" required >
-      <option value="">Select Course</option>
-      <option>PCMB</option>
-      <option>PCMC</option>
-      <option>Arts</option>
-    </select>
-
-    <textarea id="address" placeholder="Address"></textarea>
-
-    <button id="submitBtn" type="submit">Submit Application</button>
-  </form>
+<div class="progress">
+  <div class="progress-bar" id="progressBar"></div>
 </div>
 
-<!-- SUCCESS POPUP -->
-<div class="popup" id="popup">
-  <div class="popup-content">
-    <h3>✅ Admission Submitted</h3>
-    <p id="admissionId"></p>
-    <button onclick="closePopup()">OK</button>
+<form id="admissionForm">
+
+<!-- STEP 1 -->
+<div class="step active" id="step1">
+  <div class="grid">
+    <input id="name" placeholder="Student Name *" required>
+    <input id="fatherName" placeholder="Father Name *" required>
+    <input id="motherName" placeholder="Mother Name *" required>
+    <input type="date" id="dob" required>
+    <input id="mobile" placeholder="Mobile *" required>
+    <input id="familyMobile" placeholder="Family Mobile">
+    <input type="email" id="email" placeholder="Email *" required>
+    <input id="satsId" placeholder="SATS ID *" required>
+    <input id="sslcRegNo" placeholder="SSLC Reg No *" required>
+  </div>
+
+  <div class="btns">
+    <span></span>
+    <button type="button" onclick="nextStep()">Next →</button>
   </div>
 </div>
 
+<!-- STEP 2 -->
+<div class="step" id="step2">
+
+  <h4>📚 Subject-wise Marks</h4>
+  <div id="subjects">
+    <div class="subject-row">
+      <input placeholder="Subject" value="Kannada">
+      <input type="number" placeholder="Marks">
+    </div>
+    <div class="subject-row">
+      <input placeholder="Subject" value="English">
+      <input type="number" placeholder="Marks">
+    </div>
+  </div>
+
+  <button type="button" class="secondary" onclick="addSubject()">➕ Add Subject</button>
+
+  <div class="grid" style="margin-top:15px">
+    <input type="number" id="obtainedMarks" placeholder="Obtained Marks *" required oninput="calc()">
+    <input type="number" id="totalMarks" value="625" readonly>
+    <input id="percentage" placeholder="Percentage" readonly>
+    <select id="combination" required>
+      <option value="">Select Combination</option>
+      <option>PCMB</option>
+      <option>PCMC</option>
+    </select>
+  </div>
+
+  <div class="btns">
+    <button type="button" class="secondary" onclick="prevStep()">← Back</button>
+    <button type="submit">🚀 Submit</button>
+  </div>
+</div>
+
+</form>
+</div>
+
 <script>
-const form = document.getElementById("admissionForm");
-const btn = document.getElementById("submitBtn");
-const errorBox = document.getElementById("error");
-const popup = document.getElementById("popup");
-const admissionIdText = document.getElementById("admissionId");
+let step=1;
 
-form.addEventListener("submit", async (e) => {
+function nextStep(){
+  document.getElementById("step1").classList.remove("active");
+  document.getElementById("step2").classList.add("active");
+  document.getElementById("progressBar").style.width="100%";
+}
+function prevStep(){
+  document.getElementById("step2").classList.remove("active");
+  document.getElementById("step1").classList.add("active");
+  document.getElementById("progressBar").style.width="50%";
+}
+
+function addSubject(){
+  const div=document.createElement("div");
+  div.className="subject-row";
+  div.innerHTML=`<input placeholder="Subject"><input type="number" placeholder="Marks">`;
+  document.getElementById("subjects").appendChild(div);
+}
+
+function calc(){
+  const o=obtainedMarks.value,t=totalMarks.value;
+  if(o) percentage.value=((o/t)*100).toFixed(2);
+}
+
+/* SUBMIT */
+document.getElementById("admissionForm").onsubmit=e=>{
   e.preventDefault();
-  errorBox.innerText = "";
 
-  const data = {
-    name: document.getElementById("name").value.trim(),
-    mobile: document.getElementById("mobile").value.trim(),
-    email: document.getElementById("email").value.trim(),
-    course: document.getElementById("course").value,
-    address: document.getElementById("address").value.trim()
+  const data={
+    name: document.getElementById("name").value,
+    fatherName: fatherName.value,
+    motherName: motherName.value,
+    dob: dob.value,
+    mobile: mobile.value,
+    familyMobile: familyMobile.value,
+    email: email.value,
+    satsId: satsId.value,
+    sslcRegNo: sslcRegNo.value,
+    obtainedMarks:+obtainedMarks.value,
+    totalMarks:+totalMarks.value,
+    combination: combination.value,
+    permanentAddress:"NA",
+    residentialAddress:"NA"
   };
 
-  if (!data.name || !data.mobile || !data.course) {
-    errorBox.innerText = "Please fill all required fields";
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerText = "Saving...";
-
-  try {
-    const res = await fetch("http://localhost:8080/api/admissions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-
-    if (!res.ok) {
-      throw new Error("Server error");
-    }
-
-    const result = await res.json();
-    admissionIdText.innerText = "Admission ID: " + result.id;
-    popup.style.display = "flex";
-    form.reset();
-
-  } catch (err) {
-    errorBox.innerText = "Submission failed. Please try again.";
-  } finally {
-    btn.disabled = false;
-    btn.innerText = "Submit Application";
-  }
-});
-
-function closePopup() {
-  popup.style.display = "none";
-}
+  fetch("/api/admission/apply",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(data)
+  })
+  .then(r=>r.ok?r.json():r.text().then(t=>{throw t}))
+  .then(res=>{
+    alert("✅ Application Submitted\nID: "+res.admissionId);
+    location.href="check-status.html";
+  })
+  .catch(err=>alert("❌ "+err));
+};
 </script>
 
 </body>

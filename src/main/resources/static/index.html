@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>MDR PU College – Excellence in Education | Hiresindhogi</title>
+    <meta name="description" content="MDR PU College offers quality education in Science with experienced faculty, modern infrastructure, and excellent results. Admissions Open 2026–27.">
+	<meta name="keywords" content="MDR PU College, PU College Karnataka, Best PU College, Science PU College, PU Admissions 2026">
+	<meta name="author" content="MDR PU College">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    
+    <link rel="canonical" href="https://mdpu-college-portal.onrender.com/">
     <meta name="description" content="MDR PU College provides quality pre-university education with excellent facilities and experienced faculty in Hiresindhogi.">
     
     <!-- Google Fonts -->
@@ -274,6 +280,109 @@
             cursor: pointer;
         }
         
+        /* Dropdown */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 120%;
+  left: 0;
+  background: rgb(85, 74, 181);
+  list-style: none;
+  padding: 10px 0;
+  min-width: 180px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  border-radius: 8px;
+  z-index: 100;
+}
+
+.dropdown-content li a {
+  display: block;
+  padding: 10px 16px;
+  color: #333;
+  text-decoration: none;
+}
+
+.dropdown-content li a:hover {
+  background: #f2f2f2;
+}
+
+/* Show dropdown on hover (desktop) */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 280px;
+  height: 100%;
+  background: #fff;
+  transition: right 0.3s ease;
+  z-index: 999;
+  padding: 20px;
+}
+
+.mobile-menu.active {
+  right: 0;
+}
+
+.mobile-nav-links {
+  list-style: none;
+  padding: 0;
+}
+
+.mobile-nav-links li {
+  margin-bottom: 15px;
+}
+
+/* Mobile Dropdown */
+.mobile-dropdown-toggle {
+  background: none;
+  border: none;
+  color:#181616;
+  font-size: 16px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 0;
+  cursor: pointer;
+}
+
+.mobile-dropdown-content {
+  display: none;
+  list-style: none;
+  padding-left: 15px;
+  margin-top: 5px;
+}
+
+.mobile-dropdown-content li a {
+  display: block;
+  padding: 8px 0;
+  color:#141111;
+  text-decoration: none;
+}
+
+.mobile-dropdown-content li a:hover {
+  color: #4fc3f7;
+}
+
+/* Show when active */
+.mobile-dropdown-content.show {
+  display: block;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+}
         /* HERO SECTION WITH 3D ELEMENTS */
         .hero {
             height: 100vh;
@@ -281,8 +390,8 @@
             align-items: center;
             position: relative;
             overflow: hidden;
-            padding-top: 650px;
-            padding-bottom: 500px;
+            padding-top: 60px;
+            /*padding-bottom: 500px;*/
         }
         
         .hero-container {
@@ -614,6 +723,92 @@
             background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.75)), 
                         url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
         }
+        
+        /* ========================= */
+/* 📱 MOBILE HERO OVERRIDES */
+/* ========================= */
+@media (max-width: 768px) {
+
+    .hero {
+        height: auto;
+        padding: 120px 20px 80px;
+    }
+
+    .hero-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero-content {
+        max-width: 100%;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+        line-height: 1.25;
+    }
+
+    .hero p {
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+   /* ❌ Hide heavy visual elements on mobile */
+.hero-floating-card,
+.hero-shapes {
+    display: none;
+}
+
+/* ✅ SHOW LATEST NEWS ON MOBILE */
+.news-sidebar {
+    display: block;
+    position: relative;
+    width: 100%;
+    right: auto;
+    top: auto;
+    transform: none;
+    margin-top: 40px;
+    padding: 20px;
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow);
+}
+
+/* Disable 3D hover on mobile */
+.news-sidebar:hover {
+    transform: none;
+}
+
+
+    /* Reduce background intensity for readability */
+    .hero-bg {
+        background-position: center top;
+    }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+
+    .news-sidebar {
+        width: 260px;
+        right: 10px;
+    }
+
+    .hero h1 {
+        font-size: 42px;
+    }
+}
+
         
         /* STATS SECTION */
         .stats-section {
@@ -1152,6 +1347,15 @@
                     <a href="#programs">Programs</a>
                     <a href="/gallery.html">Gallery</a>
                     <a href="/admission.html">Admission</a>
+	                <!-- Dropdown -->
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">More ▾</a>
+          <ul class="dropdown-content">
+            <li><a href="/alumni.html">Join As Alumni</a></li>
+            <li><a href="/alumni-batches.html">View Alumni</a></li>
+            <li><a href="/check-status.html">Application Status</a></li>
+          </ul>
+        </div>
                     <a href="#contact">Contact</a>
                 </div>
                 
@@ -1180,6 +1384,14 @@
             <li><a href="#programs">Programs</a></li>
             <li><a href="/gallery.html">Gallery</a></li>
             <li><a href="/admission.html">Admission</a></li>
+            <li class="mobile-dropdown">
+      <button class="mobile-dropdown-toggle">More ▾</button>
+      <ul class="mobile-dropdown-content">
+        <li><a href="/alumni.html">Join As Alumni</a></li>
+        <li><a href="/alumni-batches.html">View Alumni</a></li>
+        <li><a href="/check-status.html">Application Status</a></li>
+      </ul>
+    </li>
             <li><a href="#contact">Contact</a></li>
         </ul>
         
@@ -1562,6 +1774,12 @@
             mobileThemeToggle.addEventListener('click', toggleTheme);
         }
         
+        const mobileDropdownBtn = document.querySelector(".mobile-dropdown-toggle");
+  const mobileDropdownMenu = document.querySelector(".mobile-dropdown-content");
+
+  mobileDropdownBtn.addEventListener("click", () => {
+    mobileDropdownMenu.classList.toggle("show");
+  });
         // Mobile Menu
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileMenuClose = document.getElementById('mobileMenuClose');

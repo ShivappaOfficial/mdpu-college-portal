@@ -14,7 +14,7 @@ import java.util.List;
 public class GalleryService {
 
     private static final String UPLOAD_DIR =
-        System.getProperty("user.dir") + "/src/main/resources/static/uploads/";
+        System.getProperty("user.dir") + "/uploads/";
 
     private final GalleryRepository repo;
 

@@ -12,8 +12,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -31,6 +29,9 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .headers(headers -> headers.frameOptions(frame -> frame.disable()))
             .authorizeHttpRequests(auth -> auth
+
+                // ===== STATIC FILES =====
+                .requestMatchers("/uploads/**").permitAll()
 
                 // ===== PUBLIC HTML =====
                 .requestMatchers(
@@ -50,14 +51,24 @@ public class SecurityConfig {
                     "/favicon.ico",
                     "/alumni-list.html",
                     "/alumni-batches.html",
-                    "/admin-gallery.html"
+                    "/admin-gallery.html",
+                    "/check-status.html"
                 ).permitAll()
 
-                // ===== APIs =====
+                // ===== AUTH =====
                 .requestMatchers("/api/auth/**").permitAll()
+
+                // ===== PUBLIC ADMISSION APIs =====
+                .requestMatchers(HttpMethod.POST, "/api/admission/apply").permitAll()
+                .requestMatchers(HttpMethod.GET,  "/api/admission/status").permitAll()
+
+                // ===== PUBLIC GALLERY =====
                 .requestMatchers("/api/gallery/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/admissions").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/admissions").permitAll()
+
+                // ===== ADMIN ADMISSION APIs (JWT REQUIRED) =====
+                .requestMatchers("/api/admission/admin/**").authenticated()
+
+                // ===== OTHER PUBLIC APIs =====
                 .requestMatchers(HttpMethod.POST, "/api/alumni").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/alumni/public/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/batches").permitAll()
@@ -75,7 +86,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 🔥 THIS IS THE FIX FOR IMAGE 403
+    // 🔥 STATIC RESOURCE BYPASS (IMAGES FIX)
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring().requestMatchers(
@@ -86,10 +97,9 @@ public class SecurityConfig {
                 "/favicon.ico"
         );
     }
-    
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

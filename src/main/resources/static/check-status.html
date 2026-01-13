@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Check Admission Status</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+}
+.box {
+    max-width: 400px;
+    margin: 80px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    text-align: center;
+}
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+}
+button {
+    background: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.result {
+    margin-top: 10px;
+    font-weight: bold;
+}
+.error {
+    color: red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+    <h3>Check Admission Status</h3>
+
+    <input type="text" id="admissionId" placeholder="Admission ID" required>
+    <input type="text" id="name" placeholder="Student Name (Exact)" required>
+    <input type="date" id="dob">
+
+    <button onclick="checkStatus()">Check Status</button>
+
+    <div id="result" class="result"></div>
+
+    <br>
+    <button onclick="window.close()">Close</button>
+</div>
+
+<script>
+function checkStatus() {
+
+    const admissionId = document.getElementById("admissionId").value.trim();
+    const name = document.getElementById("name").value.trim();
+    const dob = document.getElementById("dob").value; // yyyy-MM-dd
+
+    fetch(`/api/admission/status?admissionId=${encodeURIComponent(admissionId)}&name=${encodeURIComponent(name)}&dob=${dob}`, {
+        method: "POST"
+    })
+    .then(async res => {
+        const text = await res.text();
+        if (!res.ok) throw new Error(text);
+        return JSON.parse(text);
+    })
+    .then(data => {
+        document.getElementById("result").innerHTML =
+            `<span style="color:green">
+                Status: ${data.status}<br>
+                Course: ${data.combination}
+             </span>`;
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById("result").innerHTML =
+            `<span class="error">No application found</span>`;
+    });
+}
+</script>
+
+</body>
+</html>

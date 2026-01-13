@@ -1,153 +1,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Alumni Batches – MDR PU College</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Cash Book & Bank Reconciliation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f8f8f8; }
+    nav { max-width: 1200px; margin: 0 auto 20px auto; display: flex; justify-content: space-between; align-items: center; }
+    nav .left { display: flex; gap: 15px; }
+    nav a { text-decoration: none; color: #fff; background: #004080; padding: 8px 12px; border-radius: 4px; }
+    nav select { padding: 8px 12px; background: #004080; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    nav a:hover, nav select:hover { background: #0066cc; }
+    header { max-width: 1200px; margin: 0 auto 20px auto; text-align: center; }
+    h2, h3 { margin: 0; }
+    .header-table, .content-table, table { width: 100%; max-width: 1200px; margin: 0 auto 20px auto; border-collapse: collapse; }
+    .header-table td, .content-table th, .content-table td, table th, table td { border: 1px solid #000; padding: 6px; text-align: center; }
+    .content-table th, table th { background: #004080; color: #fff; }
+    .section-title { background: #004080; color: #fff; font-weight: bold; }
+    .btns { text-align: center; margin: 30px 0; }
+    button { padding: 10px 18px; margin: 5px; color: #fff; border: none; cursor: pointer; border-radius: 4px; }
+    .add { background: #28a745; }
+    .calc { background: #007bff; }
+    .export { background: #17a2b8; }
+    .clear { background: #dc3545; }
+    .print { background: #6f42c1; }
+    button:hover { opacity: 0.9; }
+    input { width: 95%; box-sizing: border-box; }
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
-<style>
-*{
-  box-sizing:border-box;
-}
-
-body{
-  font-family:Poppins,sans-serif;
-  background:#f1f5f9;
-  margin:0;
-  padding:0;
-}
-
-header{
-  background:#1e40af;
-  color:white;
-  padding:20px;
-  text-align:center;
-}
-
-header h1{
-  margin:0;
-  font-size:28px;
-}
-
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:30px 20px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:25px;
-}
-
-.card{
-  background:white;
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 10px 25px rgba(0,0,0,.1);
-  transition:.3s;
-}
-
-.card:hover{
-  transform:translateY(-8px);
-}
-
-.card img{
-  width:100%;
-  height:200px;
-  object-fit:cover;
-}
-
-.card-content{
-  padding:18px;
-}
-
-.card h3{
-  margin:0 0 8px;
-  font-size:22px;
-  color:#1e40af;
-}
-
-.card p{
-  margin:0;
-  font-size:14px;
-  color:#555;
-}
-
-.empty{
-  text-align:center;
-  font-size:18px;
-  color:#666;
-}
-
-footer{
-  background:#0f172a;
-  color:white;
-  text-align:center;
-  padding:15px;
-  margin-top:40px;
-}
-
-@media(max-width:600px){
-  header h1{
-    font-size:22px;
+    @media print { .btns, nav { display: none; } }
+    .center { text-align: center; }
+    table { width: 100% !important; }
+  .header-table, .content-table {
+    width: 100% !important;
   }
-}
-</style>
+  </style>
 </head>
-
 <body>
 
-<header>
-  <h1>🎓 Alumni Batches</h1>
-  <p>MDR PU College – Hiresindhogi</p>
-</header>
+  <nav>
+    <div class="left">
+      <a href="index.html">Home</a>
+      <a href="login.html">Logout</a>
+    </div>
+    <select id="langSelect">
+      <option value="en">English</option>
+      <option value="kn">ಕನ್ನಡ</option>
+    </select>
+  </nav>
 
-<div class="container">
-  <div class="grid" id="batches">
-    Loading batches...
+  <header>
+    <h2 id="title">Karnataka Residential Educational Institutions Association</h2>
+    <h3 id="subtitle">Cash Book Management</h3>
+  </header>
+
+  <h5 class="center">
+    <span id="adminLine">Cash Book Administrator Post Principal and District Level Officers</span><br>
+    MONTH:
+    <select id="monthSelect">
+      <option value="">--Select Month--</option>
+      <option>Jan</option><option>Feb</option><option>Mar</option><option>Apr</option><option>May</option>
+      <option>Jun</option><option>Jul</option><option>Aug</option><option>Sep</option><option>Oct</option>
+      <option>Nov</option><option>Dec</option>
+    </select>
+    YEAR:
+    <select id="year" ><option value="">--Select Year--</option></select>
+  </h5>
+
+  <table class="header-table">
+    <tr>
+      <td id="collegeNameLabel">College Name: MORARJI DESAI RESIDENTIAL PU SCIENCE COLLEGE HIRESINDHOGI</td>
+      <td><span id="accountLabel">SAVINGS BANK A/C NO:</span> <input type="text" id="accountNo"></td>
+      <td><span id="monthYearLabel">MONTH/YEAR:</span> <span id="selectedMonthYear"></span></td>
+    </tr>
+  </table>
+
+  <table class="content-table" id="cashbookTable">
+    <thead>
+      <tr class="section-title"><th colspan="5" id="ackLabel">Acknowledgement</th><th colspan="5" id="payLabel">Payments</th></tr>
+      <tr><th id="thDate1">Date</th><th id="thReceipt">Receipt No</th><th id="thAccept">Acceptance Details</th><th id="thAmount1">Amount</th><th id="thSign">Signature</th><th id="thDate2">Date</th><th id="thPayDetails">Payment Details</th><th id="thCode">Cheque/DD Code</th><th id="thAmount2">Cheque Amount</th><th id="thClassify">Classification</th></tr>
+    </thead>
+    <tbody id="entriesBody">
+      <tr><td><input type="date"></td><td><input></td><td><input></td><td><input type="number" class="receiptAmount" value="0"></td><td><input></td><td><input type="date"></td><td><input></td><td><input></td><td><input type="number" class="paymentAmount" value="0"></td><td><input></td></tr>
+    </tbody>
+    <tfoot>
+      <tr><td colspan="3" id="receiptLabel">RECEIPT</td><td id="receiptTotal">0</td><td></td><td colspan="4" id="totalExpLabel">TOTAL EXPENDITURE</td><td id="paymentTotal">0</td></tr>
+      <tr><td colspan="3"></td><td></td><td></td><td colspan="4" id="closingLabel">CLOSING BALANCE</td><td id="closingBalance">0</td></tr>
+      <tr><td colspan="3" id="grandReceiptLabel">GRAND TOTAL</td><td id="receiptGrandTotal">0</td><td></td><td colspan="4" id="grandPaymentLabel">GRAND TOTAL</td><td id="paymentGrandTotal">0</td></tr>
+    </tfoot>
+  </table>
+
+  <h1 class="center" style="margin-top:50px;">Bank Reconciliation Statement</h1>
+
+  <table id="mainTableBRS">
+    <tbody>
+      <tr><td>Opening Balance</td><td><input type="number" id="opening" value="0"></td></tr>
+      <tr><td>Grants Received From KREIS</td><td><input type="number" id="grants" value="0"></td></tr>
+      <tr><td>Other Receipts</td><td><input type="number" id="other" value="0"></td></tr>
+      <tr><td>Interests</td><td><input type="number" id="interest" value="0"></td></tr>
+      <tr><td>Total Receipts</td><td id="totalReceipts">0</td></tr>
+      <tr><td>Total Expenditure</td><td><input type="number" id="expenditure" value="0"></td></tr>
+      <tr><td>CB as per Cashbook</td><td id="cbCashbook">0</td></tr>
+      <tr><td>CB as per Bank</td><td><input type="number" id="cbBank" value="0"></td></tr>
+      <tr><td>Difference</td><td id="difference">0</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="center">Difference Details</h3>
+  <table id="detailsTable">
+    <thead><tr><th>Sl No</th><th>Amount</th></tr></thead>
+    <tbody id="detailsBody"><tr><td>1</td><td><input type="number" class="detailAmount" value="0"></td></tr></tbody>
+    <tfoot><tr><td>Sub Total</td><td id="subTotal">0</td></tr></tfoot>
+  </table>
+
+  <div class="btns">
+    <button class="add" onclick="addRow()">Add Cash Book Row</button>
+    <button class="add" onclick="addRowBRS()">Add BRS Row</button>
+    <button class="calc" onclick="calculate(); calculateBRS();">Calculate</button>
+    <!-- <button class="export" onclick="exportPDF(); exportPDF_BRS();">Export PDF</button> -->
+    <button class="export" onclick="exportExcel(); exportExcel_BRS();">Export Excel</button>
+    <button class="clear" onclick="clearAll(); clearAllBRS();">Clear</button>
+    <button class="print" onclick="window.print()">Print</button>
   </div>
-  
-</div>
 
-
-<footer>
-  © 2026 MDR PU College | Alumni Network
-</footer>
-
-<script>
-const batchesDiv = document.getElementById("batches");
-
-fetch("/api/batches")
-  .then(res => {
-    if(!res.ok) throw new Error("Failed");
-    return res.json();
-  })
-  .then(data => {
-
-    if(!data || data.length === 0){
-      batchesDiv.innerHTML = "<div class='empty'>No batches available</div>";
-      return;
+  <script>
+    const yearSelect = document.getElementById("year");
+    const currentYear = new Date().getFullYear();
+    for (let y = currentYear - 5; y <= currentYear + 5; y++) {
+      const option = document.createElement("option");
+      option.value = y; option.text = y; yearSelect.appendChild(option);
     }
-
-    batchesDiv.innerHTML = data.map(b => `
-      <div class="card">
-        <img src="${b.imageUrl}" alt="Batch ${b.year}">
-        <div class="card-content">
-          <h3>Batch of ${b.year}</h3>
-          <p>${b.title ?? ""}</p>
-        </div>
-      </div>
-    `).join("");
-
-  })
-  .catch(() => {
-    batchesDiv.innerHTML = "<div class='empty'>Error loading batches</div>";
-  });
-</script>
-
+    const monthSelect = document.getElementById("monthSelect");
+    monthSelect.addEventListener('change', updateMonthYear);
+    yearSelect.addEventListener('change', updateMonthYear);
+    function updateMonthYear() {
+      const m = monthSelect.value || '__'; const y = yearSelect.value || '__';
+      document.getElementById('selectedMonthYear').innerText = `${m} / ${y}`;
+    }
+    function addRow() {
+      const tbody = document.getElementById('entriesBody');
+      const row = tbody.rows[0].cloneNode(true);
+      row.querySelectorAll('input').forEach(i => i.value = i.type === 'number' ? 0 : '');
+      tbody.appendChild(row);
+    }
+    function calculate() {
+      let r = 0, p = 0;
+      document.querySelectorAll('.receiptAmount').forEach(i => r += +i.value || 0);
+      document.querySelectorAll('.paymentAmount').forEach(i => p += +i.value || 0);
+      document.getElementById('receiptTotal').innerText = r.toFixed(2);
+      document.getElementById('receiptGrandTotal').innerText = r.toFixed(2);
+      document.getElementById('paymentTotal').innerText = p.toFixed(2);
+      document.getElementById('paymentGrandTotal').innerText = p.toFixed(2);
+      document.getElementById('closingBalance').innerText = (r - p).toFixed(2);
+    }
+    function clearAll() {
+      document.getElementById('entriesBody').innerHTML = document.getElementById('entriesBody').rows[0].outerHTML;
+      calculate();
+    }
+    function exportPDF() {
+      const doc = new jspdf.jsPDF();
+      doc.text(document.getElementById('title').innerText, 14, 16);
+      doc.autoTable({ html: '#cashbookTable', startY: 24 });
+      doc.save('CashBook.pdf');
+    }
+    function exportExcel() {
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(document.getElementById('cashbookTable')), 'CashBook');
+      XLSX.writeFile(wb, 'CashBook.xlsx');
+    }
+    function addRowBRS() {
+      const tbody = document.getElementById('detailsBody');
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${tbody.rows.length + 1}</td><td><input type="number" class="detailAmount" value="0"></td>`;
+      tbody.appendChild(row);
+    }
+    function calculateBRS() {
+      const o = +document.getElementById('opening').value || 0;
+      const g = +document.getElementById('grants').value || 0;
+      const other = +document.getElementById('other').value || 0;
+      const i = +document.getElementById('interest').value || 0;
+      const e = +document.getElementById('expenditure').value || 0;
+      const b = +document.getElementById('cbBank').value || 0;
+      const tr = o + g + other + i;
+      document.getElementById('totalReceipts').innerText = tr;
+      const cb = tr - e;
+      document.getElementById('cbCashbook').innerText = cb;
+      document.getElementById('difference').innerText = cb - b;
+      let s = 0;
+      document.querySelectorAll('.detailAmount').forEach(i => s += +i.value || 0);
+      document.getElementById('subTotal').innerText = s;
+    }
+    function clearAllBRS() {
+      document.querySelectorAll('#mainTableBRS input').forEach(i => i.value = 0);
+      document.getElementById('totalReceipts').innerText = '0';
+      document.getElementById('cbCashbook').innerText = '0';
+      document.getElementById('difference').innerText = '0';
+      document.getElementById('subTotal').innerText = '0';
+      document.getElementById('detailsBody').innerHTML = '<tr><td>1</td><td><input type="number" class="detailAmount" value="0"></td></tr>';
+    }
+    function exportPDF_BRS() {
+      const doc = new jspdf.jsPDF();
+      doc.text('Bank Reconciliation Statement', 14, 16);
+      doc.autoTable({ html: '#mainTableBRS', startY: 24 });
+      doc.autoTable({ html: '#detailsTable', startY: doc.lastAutoTable.finalY + 10 });
+      doc.save('BankReconciliation.pdf');
+    }
+    function exportExcel_BRS() {
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(document.getElementById('mainTableBRS')), 'Main');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(document.getElementById('detailsTable')), 'Details');
+      XLSX.writeFile(wb, 'BankReconciliation.xlsx');
+    }
+    document.getElementById('langSelect').addEventListener('change', () => {
+      const l = document.getElementById('langSelect').value;
+       if (l === 'kn') {
+        document.getElementById('title').innerText = 'ಕರ್ನಾಟಕ ವಸತಿ ಶಿಕ್ಷಣ ಸಂಸ್ಥೆಗಳ ಸಂಘ';
+        document.getElementById('subtitle').innerText = 'ಹಣ ಪುಸ್ತಕ ನಿರ್ವಹಣೆ';
+        document.getElementById('adminLine').innerText = 'ಹಣ ಪುಸ್ತಕ ಆಡಳಿತಾಧಿಕಾರಿ, ಪ್ರಾಂಶುಪಾಲರು ಮತ್ತು ಜಿಲ್ಲಾ ಮಟ್ಟದ ಅಧಿಕಾರಿಗಳು';
+        document.getElementById('collegeNameLabel').innerText = 'ಕಾಲೇಜು ಹೆಸರು: ಮೊರಾರ್ಜಿ ದೇಸಾಯಿ ವಸತಿ ವಿಜ್ಞಾನ ಪಿಯು ಕಾಲೇಜು ಹಿರೇಸಿಂದೋಗಿ';
+        document.getElementById('accountLabel').innerText = 'ಉಳಿತಾಯ ಖಾತೆ ಸಂಖ್ಯೆ:';
+        document.getElementById('ackLabel').innerText = 'ಸ್ವೀಕೃತಿ';
+        document.getElementById('payLabel').innerText = 'ಪಾವತಿಗಳು';
+        document.getElementById('thDate1').innerText = 'ದಿನಾಂಕ';
+        document.getElementById('thReceipt').innerText = 'ರೆಸಿಪ್ಟ್ ಸಂಖ್ಯೆ';
+        document.getElementById('thAccept').innerText = 'ಸ್ವೀಕೃತಿ ವಿವರ';
+        document.getElementById('thAmount1').innerText = 'ಮೊತ್ತ';
+        document.getElementById('thSign').innerText = 'ಸಹಿ';
+        document.getElementById('thDate2').innerText = 'ದಿನಾಂಕ';
+        document.getElementById('thPayDetails').innerText = 'ಪಾವತಿ ವಿವರ';
+        document.getElementById('thCode').innerText = 'ಚೆಕ್/ಡಿಡಿ ಕೋಡ್';
+        document.getElementById('thAmount2').innerText = 'ಚೆಕ್ ಮೊತ್ತ';
+        document.getElementById('thClassify').innerText = 'ವರ್ಗೀಕರಣ';
+      } else {
+        location.reload();
+      }
+    });
+  </script>
 </body>
 </html>
+
