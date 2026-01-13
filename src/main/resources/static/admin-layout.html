@@ -12,6 +12,7 @@
 body {
     min-height: 100vh;
     background: #f1f5f9;
+    overflow-x: hidden;
 }
 
 /* SIDEBAR */
@@ -19,9 +20,13 @@ body {
     width: 230px;
     height: 100vh;
     position: fixed;
+    top: 0;
+    left: 0;
     background: #0f172a;
     color: white;
     padding-top: 20px;
+    transition: transform 0.3s ease;
+    z-index: 1000;
 }
 
 .sidebar h4 {
@@ -46,6 +51,7 @@ body {
 .content {
     margin-left: 230px;
     padding: 15px;
+    transition: margin-left 0.3s ease;
 }
 
 /* NAVBAR */
@@ -61,6 +67,35 @@ iframe {
     border: none;
     background: white;
 }
+
+/* MOBILE STYLES */
+@media (max-width: 768px) {
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .content {
+        margin-left: 0;
+    }
+
+    .menu-btn {
+        display: inline-block;
+    }
+}
+
+/* HAMBURGER BUTTON */
+.menu-btn {
+    display: none;
+    font-size: 1.5rem;
+    color: white;
+    background: none;
+    border: none;
+}
 </style>
 </head>
 
@@ -75,69 +110,62 @@ if (!token) {
 </script>
 
 <!-- SIDEBAR -->
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
     <h4>ADMIN PANEL</h4>
     <hr>
 
-    <a href="/dashboard.html" target="contentFrame">
+    <a href="/dashboard.html" target="contentFrame" onclick="closeSidebar()">
         <i class="bi bi-speedometer2"></i> Dashboard
     </a>
 
-    <a href="/employees.html" target="contentFrame">
+    <a href="/employees.html" target="contentFrame" onclick="closeSidebar()">
         <i class="bi bi-people"></i> Employees
     </a>
 
-    <a href="/gallery.html" target="contentFrame">
+    <a href="/gallery.html" target="contentFrame" onclick="closeSidebar()">
         <i class="bi bi-image"></i> Gallery
     </a>
 
-    <a href="/admission.html" target="contentFrame">
+    <a href="/admission.html" target="contentFrame" onclick="closeSidebar()">
         <i class="bi bi-journal-text"></i> Admission
     </a>
-    
-    <a href="/admin-admissions.html" target="contentFrame">
+
+    <a href="/admin-admissions.html" target="contentFrame" onclick="closeSidebar()">
         <i class="bi bi-journal-text"></i> View Applications
     </a>
-    
-    <a href="admin-alumni.html" target="contentFrame">
+
+    <a href="/admin-alumni.html" target="contentFrame" onclick="closeSidebar()">
         <i class="bi bi-journal-text"></i> Approve Alumni
     </a>
-    
-      <!--<a href="alumni-list.html" target="contentFrame">
-        <i class="bi bi-journal-text"></i> Alumni Lists
-    </a>-->
-    
-      <a href="/alumni-batches.html" target="contentFrame">
+
+    <a href="/alumni-batches.html" target="contentFrame" onclick="closeSidebar()">
         <i class="bi bi-journal-text"></i> Alumni Batches
     </a>
-    
-     <a href="/admin-batches.html" target="contentFrame">
+
+    <a href="/admin-batches.html" target="contentFrame" onclick="closeSidebar()">
         <i class="bi bi-journal-text"></i> Admin Batches
     </a>
-    
-    <!--<a href="/alumni-showcase.html" target="contentFrame">
-        <i class="bi bi-journal-text"></i> Alumni Showcase
-    </a>-->
 </div>
 
 <!-- MAIN -->
 <div class="content">
 
     <!-- NAVBAR -->
-  <!--  <nav class="navbar navbar-dark px-4 mb-3">
-        <span class="navbar-brand">Employee Management System</span>
-         <button class="btn btn-secondary btn-sm" onclick="home()">Home</button>
-        <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
-    </nav>-->
-    
-    <nav class="navbar navbar-dark px-4 mb-3 d-flex justify-content-between">
-    <span class="navbar-brand">Employee Management System</span>
-    
-    <div class="d-flex gap-2">
-        <button class="btn btn-success btn-sm" onclick="home()">Home</button>
-        <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
-    </div>
-</nav>
+    <nav class="navbar navbar-dark px-4 mb-3 d-flex justify-content-between align-items-center">
+
+        <div class="d-flex align-items-center gap-2">
+            <button class="menu-btn" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <span class="navbar-brand mb-0">Employee Management System</span>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-success btn-sm" onclick="home()">Home</button>
+            <button class="btn btn-danger btn-sm" onclick="logout()">Logout</button>
+        </div>
+
+    </nav>
 
     <!-- PAGE LOADER -->
     <iframe src="/dashboard.html" name="contentFrame"></iframe>
@@ -148,9 +176,20 @@ function logout() {
     localStorage.removeItem("token");
     window.location.href = "/admin.html";
 }
+
 function home() {
-	localStorage.removeItem("token");
-	window.location.href="/index.html";
+    localStorage.removeItem("token");
+    window.location.href = "/index.html";
+}
+
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("show");
+}
+
+function closeSidebar() {
+    if (window.innerWidth <= 768) {
+        document.getElementById("sidebar").classList.remove("show");
+    }
 }
 </script>
 
