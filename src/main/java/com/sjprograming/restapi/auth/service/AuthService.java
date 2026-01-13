@@ -21,19 +21,18 @@ public class AuthService {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // ✅ ADD THIS
+    private PasswordEncoder passwordEncoder;   // ✅ ADD THIS
 
     public Map<String, String> login(String username, String password) {
 
         Admin admin = adminRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Invalid username"));
 
-        // ✅ CORRECT PASSWORD CHECK
+        // ✅ FIX IS HERE
         if (!passwordEncoder.matches(password, admin.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
 
-        // ✅ JWT with ROLE
         String token = jwtUtil.generateToken(
                 admin.getUsername(),
                 admin.getRole()

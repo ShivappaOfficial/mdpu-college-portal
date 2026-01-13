@@ -24,15 +24,33 @@ body {
     left: 0;
     background: #0f172a;
     color: white;
-    padding-top: 20px;
+    padding-top: 15px;
     transition: transform 0.3s ease;
     z-index: 1000;
 }
 
-.sidebar h4 {
-    text-align: center;
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
 }
 
+.sidebar-header h4 {
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.close-btn {
+    font-size: 20px;
+    cursor: pointer;
+    display: none;
+}
+
+/* LINKS */
 .sidebar a {
     display: flex;
     align-items: center;
@@ -45,6 +63,13 @@ body {
 .sidebar a:hover {
     background: #1e40af;
     color: white;
+}
+
+/* ACTIVE MENU */
+.sidebar a.active {
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
 }
 
 /* CONTENT */
@@ -68,7 +93,16 @@ iframe {
     background: white;
 }
 
-/* MOBILE STYLES */
+/* HAMBURGER */
+.menu-btn {
+    display: none;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: white;
+}
+
+/* MOBILE */
 @media (max-width: 768px) {
 
     .sidebar {
@@ -86,15 +120,10 @@ iframe {
     .menu-btn {
         display: inline-block;
     }
-}
 
-/* HAMBURGER BUTTON */
-.menu-btn {
-    display: none;
-    font-size: 1.5rem;
-    color: white;
-    background: none;
-    border: none;
+    .close-btn {
+        display: inline-block;
+    }
 }
 </style>
 </head>
@@ -103,47 +132,53 @@ iframe {
 
 <!-- AUTH CHECK -->
 <script>
-const token = localStorage.getItem("token");
-if (!token) {
+if (!localStorage.getItem("token")) {
     window.location.href = "/admin.html";
 }
 </script>
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
-    <h4>ADMIN PANEL</h4>
+
+    <div class="sidebar-header">
+        <h4>
+            <i class="bi bi-person-circle"></i> ADMIN PANEL
+        </h4>
+        <span class="close-btn" onclick="closeSidebar()">✖</span>
+    </div>
+
     <hr>
 
-    <a href="/dashboard.html" target="contentFrame" onclick="closeSidebar()">
+    <a href="/dashboard.html" target="contentFrame" onclick="menuClick(this)">
         <i class="bi bi-speedometer2"></i> Dashboard
     </a>
 
-    <a href="/employees.html" target="contentFrame" onclick="closeSidebar()">
+    <a href="/employees.html" target="contentFrame" onclick="menuClick(this)">
         <i class="bi bi-people"></i> Employees
     </a>
 
-    <a href="/gallery.html" target="contentFrame" onclick="closeSidebar()">
+    <a href="/gallery.html" target="contentFrame" onclick="menuClick(this)">
         <i class="bi bi-image"></i> Gallery
     </a>
 
-    <a href="/admission.html" target="contentFrame" onclick="closeSidebar()">
+    <a href="/admission.html" target="contentFrame" onclick="menuClick(this)">
         <i class="bi bi-journal-text"></i> Admission
     </a>
 
-    <a href="/admin-admissions.html" target="contentFrame" onclick="closeSidebar()">
-        <i class="bi bi-journal-text"></i> View Applications
+    <a href="/admin-admissions.html" target="contentFrame" onclick="menuClick(this)">
+        <i class="bi bi-journal-check"></i> View Applications
     </a>
 
-    <a href="/admin-alumni.html" target="contentFrame" onclick="closeSidebar()">
-        <i class="bi bi-journal-text"></i> Approve Alumni
+    <a href="/admin-alumni.html" target="contentFrame" onclick="menuClick(this)">
+        <i class="bi bi-person-check"></i> Approve Alumni
     </a>
 
-    <a href="/alumni-batches.html" target="contentFrame" onclick="closeSidebar()">
-        <i class="bi bi-journal-text"></i> Alumni Batches
+    <a href="/alumni-batches.html" target="contentFrame" onclick="menuClick(this)">
+        <i class="bi bi-collection"></i> Alumni Batches
     </a>
 
-    <a href="/admin-batches.html" target="contentFrame" onclick="closeSidebar()">
-        <i class="bi bi-journal-text"></i> Admin Batches
+    <a href="/admin-batches.html" target="contentFrame" onclick="menuClick(this)">
+        <i class="bi bi-stack"></i> Admin Batches
     </a>
 </div>
 
@@ -151,13 +186,13 @@ if (!token) {
 <div class="content">
 
     <!-- NAVBAR -->
-    <nav class="navbar navbar-dark px-4 mb-3 d-flex justify-content-between align-items-center">
+    <nav class="navbar navbar-dark px-4 mb-3 d-flex justify-content-between">
 
         <div class="d-flex align-items-center gap-2">
             <button class="menu-btn" onclick="toggleSidebar()">
                 <i class="bi bi-list"></i>
             </button>
-            <span class="navbar-brand mb-0">Employee Management System</span>
+            <span class="navbar-brand">Employee Management System</span>
         </div>
 
         <div class="d-flex gap-2">
@@ -167,30 +202,45 @@ if (!token) {
 
     </nav>
 
-    <!-- PAGE LOADER -->
+    <!-- IFRAME -->
     <iframe src="/dashboard.html" name="contentFrame"></iframe>
 </div>
 
 <script>
+function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("show");
+}
+
+function closeSidebar() {
+    document.getElementById("sidebar").classList.remove("show");
+}
+
+function menuClick(el) {
+
+    document.querySelectorAll(".sidebar a").forEach(a => {
+        a.classList.remove("active");
+    });
+
+    el.classList.add("active");
+
+    if (window.innerWidth <= 768) {
+        closeSidebar();
+    }
+}
+
 function logout() {
     localStorage.removeItem("token");
     window.location.href = "/admin.html";
 }
 
 function home() {
-    localStorage.removeItem("token");
     window.location.href = "/index.html";
 }
 
-function toggleSidebar() {
-    document.getElementById("sidebar").classList.toggle("show");
-}
-
-function closeSidebar() {
-    if (window.innerWidth <= 768) {
-        document.getElementById("sidebar").classList.remove("show");
-    }
-}
+/* DEFAULT ACTIVE */
+window.onload = () => {
+    document.querySelector(".sidebar a")?.classList.add("active");
+};
 </script>
 
 </body>
