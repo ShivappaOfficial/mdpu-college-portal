@@ -3,6 +3,7 @@ package com.sjprograming.restapi.admission.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(
@@ -15,9 +16,21 @@ public class Admission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonProperty("name")
     private String name;
+
+    @JsonProperty("fatherName")
     private String fatherName;
+
+    @JsonProperty("motherName")
     private String motherName;
+
+    @JsonProperty("mobile")
+    private String mobile;
+
+    @JsonProperty("email")
+    private String email;
+
 
     @Column(columnDefinition = "TEXT", nullable = true)
     private String permanentAddress;
@@ -26,9 +39,9 @@ public class Admission {
     private String residentialAddress;
 
 
-    private String mobile;
+   
     private String familyMobile;
-    private String email;
+ 
 
     private String satsId;
     private String sslcRegNo;

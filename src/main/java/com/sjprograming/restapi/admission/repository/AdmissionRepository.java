@@ -14,10 +14,12 @@ public interface AdmissionRepository extends JpaRepository<Admission, Long> {
 
     // Admin view all
     List<Admission> findAllByOrderByIdDesc();
+    Optional<Admission> findByAdmissionId(String admissionId);
+
+//    Optional<Admission> findByAdmissionIdAndNameIgnoreCase(
+//    	    String admissionId,
+//    	    String name
+//    	);
     
-    Optional<Admission> findByAdmissionIdAndNameIgnoreCase(
-    	    String admissionId,
-    	    String name
-    	);
 
 }

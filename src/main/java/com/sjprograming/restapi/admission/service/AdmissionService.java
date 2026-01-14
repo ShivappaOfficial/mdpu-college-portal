@@ -5,6 +5,7 @@ import com.sjprograming.restapi.admission.repository.AdmissionRepository;
 import com.sjprograming.restapi.notification.EmailService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -45,6 +46,7 @@ public class AdmissionService {
 
         // ✅ Save first time to generate DB ID
         Admission saved = admissionRepository.save(admission);
+        admission.setCreatedAt(LocalDateTime.now());
 
         // ✅ Generate Admission ID
         String admissionId =

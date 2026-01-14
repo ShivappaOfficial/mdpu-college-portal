@@ -94,8 +94,10 @@ button.loading{
 <div class="card">
   <h2>🔍 Check Admission Status</h2>
 
-  <input id="admissionId" placeholder="Admission ID (e.g. ADM-2017010008)" />
-  <input id="name" placeholder="Student Name" />
+  <input
+    id="admissionId"
+    placeholder="Admission ID (e.g. ADM-2017010008)"
+  />
 
   <button id="btn" onclick="checkStatus()">Check Status</button>
 
@@ -108,15 +110,12 @@ async function checkStatus(){
   const admissionId =
     document.getElementById("admissionId").value.trim();
 
-  const name =
-    document.getElementById("name").value.trim();
-
   const btn = document.getElementById("btn");
   const result = document.getElementById("result");
 
-  if(!admissionId || !name){
+  if(!admissionId){
     result.innerHTML =
-      "<div class='error'>❌ Please enter Admission ID and Name</div>";
+      "<div class='error'>❌ Please enter Admission ID</div>";
     return;
   }
 
@@ -126,11 +125,12 @@ async function checkStatus(){
   result.innerHTML = "";
 
   try{
+    console.log("Checking admission:", admissionId);
+
     const res = await fetch(
-      `/api/admission/status?admissionId=${encodeURIComponent(admissionId)}&name=${encodeURIComponent(name)}`,
+      `/api/admission/status?admissionId=${encodeURIComponent(admissionId)}`,
       { method:"POST" }
     );
-    consol.log("admission : "+ admissionId +"And Name : "+name);
 
     if(!res.ok){
       throw new Error("No application found");
@@ -143,8 +143,9 @@ async function checkStatus(){
 
       <div class="details">
         <p><b>Status:</b> ${data.status}</p>
+        <p><b>Name:</b> ${data.name ?? "-"}</p>
         <p><b>Combination:</b> ${data.combination}</p>
-        <p><b>Percentage:</b> ${data.percentage.toFixed(2)}%</p>
+        <p><b>Percentage:</b> ${data.percentage?.toFixed(2)}%</p>
         <p><b>Mobile:</b> ${data.mobile}</p>
       </div>
     `;

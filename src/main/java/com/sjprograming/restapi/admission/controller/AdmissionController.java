@@ -74,23 +74,17 @@ public class AdmissionController {
     // PUBLIC – CHECK STATUS (FINAL VERSION)
     @PostMapping("/status")
     public ResponseEntity<?> checkStatus(
-            @RequestParam String admissionId,
-            @RequestParam String name
+            @RequestParam String admissionId
     ) {
-        Optional<Admission> opt =
-            admissionRepository.findByAdmissionIdAndNameIgnoreCase(
-                admissionId.trim(),
-                name.trim()
-            );
-
-        if (opt.isPresent()) {
-            return ResponseEntity.ok(opt.get());
-        }
-
-        return ResponseEntity
-            .badRequest()
-            .body("No application found");
+        return admissionRepository
+                .findByAdmissionId(admissionId.trim())
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() ->
+                    ResponseEntity.badRequest().body("No application found")
+                );
     }
+
+
 
     // ✅ CHECK ADMISSION STATUS
 //    @PostMapping("/status")
