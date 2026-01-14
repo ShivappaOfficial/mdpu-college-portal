@@ -119,7 +119,7 @@ button.loading::after{
   .grid{grid-template-columns:1fr}
 }
 
-/* ===== MODERN ALERT ===== */
+/* Alert */
 #alertBox{
   position:fixed;
   top:20px;
@@ -129,34 +129,17 @@ button.loading::after{
   border-radius:14px;
   font-weight:600;
   color:white;
-  box-shadow:0 15px 35px rgba(0,0,0,.25);
-  animation:slideIn .4s ease;
   display:none;
   z-index:9999;
 }
-
 .alert-success{background:var(--success)}
 .alert-error{background:var(--error)}
 .alert-info{background:#3b82f6}
-
-@keyframes slideIn{
-  from{transform:translateX(120%)}
-  to{transform:translateX(0)}
-}
-
-@media(max-width:600px){
-  #alertBox{
-    right:50%;
-    transform:translateX(50%);
-    width:90%;
-  }
-}
 </style>
 </head>
 
 <body>
 
-<!-- ALERT -->
 <div id="alertBox"></div>
 
 <div class="card">
@@ -194,17 +177,17 @@ button.loading::after{
 <h4>📚 Subject-wise Marks</h4>
 
 <div id="subjects">
-  <div class="subject-row"><input value="Kannada" readonly><input type="number" oninput="calc()"></div>
-  <div class="subject-row"><input value="English" readonly><input type="number" oninput="calc()"></div>
-  <div class="subject-row"><input value="Hindi" readonly><input type="number" oninput="calc()"></div>
-  <div class="subject-row"><input value="Mathematics" readonly><input type="number" oninput="calc()"></div>
-  <div class="subject-row"><input value="Science" readonly><input type="number" oninput="calc()"></div>
-  <div class="subject-row"><input value="Social Science" readonly><input type="number" oninput="calc()"></div>
+  <div class="subject-row"><input value="Kannada" readonly><input id="kannada" type="number" oninput="calc()" required></div>
+  <div class="subject-row"><input value="English" readonly><input id="english" type="number" oninput="calc()" required></div>
+  <div class="subject-row"><input value="Hindi" readonly><input id="hindi" type="number" oninput="calc()" required></div>
+  <div class="subject-row"><input value="Mathematics" readonly><input id="maths" type="number" oninput="calc()" required></div>
+  <div class="subject-row"><input value="Science" readonly><input id="science" type="number" oninput="calc()" required></div>
+  <div class="subject-row"><input value="Social Science" readonly><input id="social" type="number" oninput="calc()" required></div>
 </div>
 
 <div class="grid" style="margin-top:14px">
-  <input type="number" id="obtainedMarks" placeholder="Total Obtained Marks" readonly>
-  <input type="number" id="totalMarks" value="625" readonly>
+  <input id="obtainedMarks" placeholder="Total Obtained Marks" readonly>
+  <input id="totalMarks" value="625" readonly>
   <input id="percentage" placeholder="Percentage" readonly>
   <select id="combination" required>
     <option value="">Select Combination</option>
@@ -223,96 +206,81 @@ button.loading::after{
 </div>
 
 <script>
-/* ALERT */
-function showAlert(msg,type="success",time=3000){
-  const a=document.getElementById("alertBox");
-  a.className="";
-  a.classList.add("alert-"+type);
-  a.innerHTML=msg;
-  a.style.display="block";
-  setTimeout(()=>a.style.display="none",time);
+const alertBox = document.getElementById("alertBox");
+
+function showAlert(msg,type){
+  alertBox.className = "alert-" + type;
+  alertBox.innerHTML = msg;
+  alertBox.style.display = "block";
+  setTimeout(()=>alertBox.style.display="none",3000);
 }
 
-/* STEPS */
 function nextStep(){
   step1.classList.remove("active");
   step2.classList.add("active");
   progressBar.style.width="100%";
 }
+
 function prevStep(){
   step2.classList.remove("active");
   step1.classList.add("active");
   progressBar.style.width="50%";
 }
 
-/* MARKS */
 function calc(){
-  let sum=0;
-  document.querySelectorAll("#subjects input[type='number']").forEach(i=>{
-    const v=parseFloat(i.value);
-    if(!isNaN(v)) sum+=v;
+  let sum = 0;
+  document.querySelectorAll("#subjects input[type=number]").forEach(i=>{
+    if(i.value) sum += +i.value;
   });
-  obtainedMarks.value=sum;
-  percentage.value=sum?((sum/totalMarks.value)*100).toFixed(2):"";
+  obtainedMarks.value = sum;
+  percentage.value = sum ? ((sum/625)*100).toFixed(2) : "";
 }
 
-/* SUBMIT */
-admissionForm.onsubmit=async e=>{
+admissionForm.onsubmit = async e =>{
   e.preventDefault();
-
-  const btn=submitBtn;
-  if(btn.classList.contains("loading"))return;
-
-  btn.classList.add("loading");
-  btn.disabled=true;
+  submitBtn.classList.add("loading");
+  submitBtn.disabled = true;
   showAlert("Submitting application…","info");
 
- const data = {
-  name: name.value,
-  fatherName: fatherName.value,
-  motherName: motherName.value,
-  dob: dob.value,
-  mobile: mobile.value,
-  familyMobile: familyMobile.value,
-  email: email.value,
-  satsId: satsId.value,
-  sslcRegNo: sslcRegNo.value,
-
-  kannada: +kannada.value,
-  english: +english.value,
-  hindi: +hindi.value,
-  mathematics: +maths.value,
-  science: +science.value,
-  socialScience: +social.value,
-
-  obtainedMarks: +obtainedMarks.value,
-  totalMarks: +totalMarks.value,
-  percentage: +percentage.value,
-  combination: combination.value,
-
-  permanentAddress: permanentAddress.value,
-  residentialAddress: residentialAddress.value,
-  others: JSON.stringify({ extra: "NA" })
-};
-
+  const data = {
+    name: name.value,
+    fatherName: fatherName.value,
+    motherName: motherName.value,
+    dob: dob.value,
+    mobile: mobile.value,
+    familyMobile: familyMobile.value,
+    email: email.value,
+    satsId: satsId.value,
+    sslcRegNo: sslcRegNo.value,
+    kannada:+kannada.value,
+    english:+english.value,
+    hindi:+hindi.value,
+    mathematics:+maths.value,
+    science:+science.value,
+    socialScience:+social.value,
+    obtainedMarks:+obtainedMarks.value,
+    totalMarks:+totalMarks.value,
+    percentage:+percentage.value,
+    combination:combination.value,
+    permanentAddress:"NA",
+    residentialAddress:"NA",
+    others:"{}"
+  };
 
   try{
-    const res=await fetch("/api/admission/apply",{
+    const res = await fetch("/api/admission/apply",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(data)
     });
-
     if(!res.ok) throw await res.text();
-    const result=await res.json();
-
-    showAlert("✅ Application Submitted<br>ID: "+result.admissionId,"success",4000);
-    setTimeout(()=>location.href="check-status.html",2500);
-
+    const result = await res.json();
+    showAlert("✅ Submitted<br>ID: "+result.admissionId,"success");
+    setTimeout(()=>location.href="check-status.html",2000);
   }catch(err){
-    showAlert("❌ "+err,"error",5000);
-    btn.classList.remove("loading");
-    btn.disabled=false;
+    showAlert("❌ "+err,"error");
+    submitBtn.disabled=false;
+    submitBtn.classList.remove("loading");
   }
 };
 </script>
