@@ -14,7 +14,6 @@ public class AdmissionService {
     private final AdmissionRepository admissionRepository;
     private final EmailService emailService;
 
-    // ✅ Constructor Injection
     public AdmissionService(
             AdmissionRepository admissionRepository,
             EmailService emailService
@@ -38,27 +37,33 @@ public class AdmissionService {
             );
         }
 
+        // ❌ Safety check
+        if (admission.getObtainedMarks() == null || admission.getTotalMarks() == null) {
+            throw new RuntimeException("Marks are required");
+        }
+
         // ✅ Calculate percentage
         double percentage =
                 (admission.getObtainedMarks() * 100.0)
                 / admission.getTotalMarks();
         admission.setPercentage(percentage);
 
-        // ✅ Save first time to generate DB ID
-        Admission saved = admissionRepository.save(admission);
+        // ✅ Set created time BEFORE save
         admission.setCreatedAt(LocalDateTime.now());
 
+        // ✅ First save → get DB ID
+        Admission saved = admissionRepository.save(admission);
+
         // ✅ Generate Admission ID
-        String admissionId =
-                generateAdmissionId(
-                        admission.getSslcRegNo(),
-                        saved.getId()
-                );
+        String admissionId = generateAdmissionId(
+                admission.getSslcRegNo(),
+                saved.getId()
+        );
 
         saved.setAdmissionId("ADM-" + admissionId);
         admissionRepository.save(saved);
 
-        // ✅ SEND EMAIL (ASYNC)
+        // ✅ SEND EMAIL (ASYNC & SAFE)
         emailService.sendAdmissionMail(
                 saved.getEmail(),
                 saved.getName(),
@@ -70,9 +75,12 @@ public class AdmissionService {
         return saved;
     }
 
-    // ✅ Admission ID logic
+    // ✅ Admission ID logic (SAFE)
     private String generateAdmissionId(String sslcRegNo, Long id) {
-        String prefix = sslcRegNo.substring(0, 6);
+        String prefix = sslcRegNo.length() >= 6
+                ? sslcRegNo.substring(0, 6)
+                : sslcRegNo;
+
         String suffix = String.format("%04d", id);
         return prefix + suffix;
     }

@@ -267,23 +267,34 @@ admissionForm.onsubmit=async e=>{
   btn.disabled=true;
   showAlert("Submitting application…","info");
 
-  const data={
-    name:name.value,
-    fatherName:fatherName.value,
-    motherName:motherName.value,
-    dob:dob.value,
-    mobile:mobile.value,
-    familyMobile:familyMobile.value,
-    email:email.value,
-    satsId:satsId.value,
-    sslcRegNo:sslcRegNo.value,
-    obtainedMarks:+obtainedMarks.value,
-    totalMarks:+totalMarks.value,
-    percentage:+percentage.value,
-    combination:combination.value,
-    permanentAddress:"NA",
-    residentialAddress:"NA"
-  };
+ const data = {
+  name: name.value,
+  fatherName: fatherName.value,
+  motherName: motherName.value,
+  dob: dob.value,
+  mobile: mobile.value,
+  familyMobile: familyMobile.value,
+  email: email.value,
+  satsId: satsId.value,
+  sslcRegNo: sslcRegNo.value,
+
+  kannada: +kannada.value,
+  english: +english.value,
+  hindi: +hindi.value,
+  mathematics: +maths.value,
+  science: +science.value,
+  socialScience: +social.value,
+
+  obtainedMarks: +obtainedMarks.value,
+  totalMarks: +totalMarks.value,
+  percentage: +percentage.value,
+  combination: combination.value,
+
+  permanentAddress: permanentAddress.value,
+  residentialAddress: residentialAddress.value,
+  others: JSON.stringify({ extra: "NA" })
+};
+
 
   try{
     const res=await fetch("/api/admission/apply",{
