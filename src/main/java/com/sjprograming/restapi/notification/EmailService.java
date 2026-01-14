@@ -17,6 +17,12 @@ public class EmailService {
         this.mailSender = mailSender;
     }
 
+    private String safeName(String name) {
+        return (name == null || name.trim().isEmpty())
+                ? "Student"
+                : name.trim();
+    }
+
     // ================= APPLICATION SUBMITTED =================
     public void sendAdmissionMail(
             String toEmail,
@@ -26,29 +32,21 @@ public class EmailService {
             String mobile
     ) {
         try {
-            // ✅ SAFE NAME (NULL / EMPTY HANDLING)
-            String safeName =
-                    (studentName == null || studentName.trim().isEmpty())
-                            ? "Student"
-                            : studentName.trim();
-
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper =
                     new MimeMessageHelper(message, false, "UTF-8");
 
-            // IMPORTANT: must match spring.mail.username
-            helper.setFrom(
-                    new InternetAddress(
-                            "shivuyk57@gmail.com",
-                            "MDR PU College"
-                    )
-            );
+            helper.setFrom(new InternetAddress(
+                    "shivuyk57@gmail.com",
+                    "MDR PU College"
+            ));
 
             helper.setTo(toEmail);
+
             helper.setSubject("Admission Application Received – MDR PU College");
 
             helper.setText(
-                    "Dear " + safeName + ",\n\n" +
+                    "Dear " + safeName(studentName) + ",\n\n" +
                     "Your admission application has been successfully received.\n\n" +
                     "Admission ID: " + admissionId + "\n" +
                     "Course Applied: " + course + "\n" +
@@ -64,7 +62,8 @@ public class EmailService {
             System.out.println("✅ Admission email sent to " + toEmail);
 
         } catch (Exception e) {
-            System.err.println("⚠️ Email failed (application saved): " + e.getMessage());
+            System.err.println("⚠️ Email failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -98,7 +97,6 @@ public class EmailService {
         );
     }
 
-    // ================= COMMON STATUS MAIL =================
     private void sendStatusMail(
             String toEmail,
             String studentName,
@@ -107,28 +105,20 @@ public class EmailService {
             String messageText
     ) {
         try {
-            // ✅ SAFE NAME AGAIN
-            String safeName =
-                    (studentName == null || studentName.trim().isEmpty())
-                            ? "Student"
-                            : studentName.trim();
-
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper =
                     new MimeMessageHelper(message, false, "UTF-8");
 
-            helper.setFrom(
-                    new InternetAddress(
-                            "shivuyk57@gmail.com",
-                            "MDR PU College"
-                    )
-            );
+            helper.setFrom(new InternetAddress(
+                    "shivuyk57@gmail.com",
+                    "MDR PU College"
+            ));
 
             helper.setTo(toEmail);
             helper.setSubject("Admission Status Update – MDR PU College");
 
             helper.setText(
-                    "Dear " + safeName + ",\n\n" +
+                    "Dear " + safeName(studentName) + ",\n\n" +
                     messageText + "\n\n" +
                     "Admission ID: " + admissionId + "\n" +
                     "Status: " + status + "\n\n" +
