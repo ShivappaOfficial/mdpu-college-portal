@@ -19,32 +19,28 @@ body{
 .card{
   background:white;
   padding:30px;
-  border-radius:14px;
+  border-radius:16px;
   width:100%;
   max-width:420px;
-  box-shadow:0 20px 40px rgba(0,0,0,.1);
-}
-
-h2{
+  box-shadow:0 10px 30px rgba(0,0,0,.1);
   text-align:center;
-  margin-bottom:20px;
 }
 
 input{
   width:100%;
   padding:12px;
-  margin-bottom:12px;
+  margin-bottom:14px;
   border-radius:10px;
-  border:1px solid #cbd5f5;
+  border:1px solid #cbd5e1;
 }
 
 button{
   width:100%;
   padding:12px;
+  border:none;
+  border-radius:12px;
   background:#22c55e;
   color:white;
-  border:none;
-  border-radius:10px;
   font-weight:600;
   cursor:pointer;
 }
@@ -54,11 +50,12 @@ button.loading{
   cursor:not-allowed;
 }
 
-#result{
-  margin-top:16px;
-  text-align:center;
+.status{
+  margin-top:15px;
   font-weight:600;
 }
+.success{color:#16a34a}
+.error{color:#dc2626}
 </style>
 </head>
 
@@ -67,61 +64,55 @@ button.loading{
 <div class="card">
   <h2>Check Admission Status</h2>
 
-  <input id="admissionId" placeholder="Admission ID" required>
+  <input id="admissionId" placeholder="Admission ID (ADM-XXXX)" required>
   <input id="name" placeholder="Student Name" required>
 
-  <!-- DOB kept ONLY for UI (not sent) -->
-  <input type="date" id="dob">
+  <button id="btn" onclick="checkStatus()">Check Status</button>
 
-  <button id="checkBtn" onclick="checkStatus()">Check Status</button>
-
-  <div id="result"></div>
+  <div id="result" class="status"></div>
 </div>
 
 <script>
 async function checkStatus(){
+  const btn = document.getElementById("btn");
+  const result = document.getElementById("result");
+
+  btn.classList.add("loading");
+  btn.innerText = "Checking...";
+  result.innerHTML = "";
 
   const admissionId = document.getElementById("admissionId").value.trim();
   const name = document.getElementById("name").value.trim();
 
-  if(!admissionId || !name){
-    alert("Please enter Admission ID and Name");
-    return;
-  }
-
-  const btn = document.getElementById("checkBtn");
-  btn.classList.add("loading");
-  btn.disabled = true;
-  btn.innerText = "Checking...";
-
-  try{
+   try{
     const res = await fetch(
       `/api/admission/status?admissionId=${encodeURIComponent(admissionId)}&name=${encodeURIComponent(name)}`,
       { method:"POST" }
     );
-
+    console.log("admission posted"+admissionId);
+	  console.log("admission posted"+name);
+	  
     if(!res.ok){
       throw await res.text();
+        console.log("result Not Okay");
     }
 
     const data = await res.json();
 
-    document.getElementById("result").innerHTML = `
-      <div style="color:#16a34a">✅ Application Found</div>
-      <p><b>Name:</b> ${data.name}</p>
-      <p><b>Combination:</b> ${data.combination}</p>
-      <p><b>Status:</b> ${data.status}</p>
+    result.className = "status success";
+    result.innerHTML = `
+      ✅ Status: <b>${data.status ?? "PENDING"}</b><br>
+      Course: ${data.combination}<br>
+      Percentage: ${data.percentage.toFixed(2)}%
     `;
 
   }catch(err){
-    document.getElementById("result").innerHTML =
-      `<span style="color:red">❌ No application found</span>`;
+    result.className = "status error";
+    result.innerHTML = "❌ No application found";
   }
-  finally{
-    btn.classList.remove("loading");
-    btn.disabled = false;
-    btn.innerText = "Check Status";
-  }
+
+  btn.classList.remove("loading");
+  btn.innerText = "Check Status";
 }
 </script>
 

@@ -257,6 +257,7 @@ admissionForm.onsubmit = async e=>{
     const result = await res.json();
 
     alert("✅ Application Submitted\nAdmission ID: "+result.admissionId);
+    console.log("Application Submitted "+result.admissionId);
     location.href="check-status.html";
 
   }catch(err){
