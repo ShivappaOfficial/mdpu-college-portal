@@ -9,13 +9,11 @@
 :root{
   --primary:#4f46e5;
   --success:#22c55e;
+  --error:#ef4444;
   --muted:#64748b;
 }
 
-*{
-  box-sizing:border-box;
-  font-family:Segoe UI,system-ui;
-}
+*{box-sizing:border-box;font-family:Segoe UI,system-ui}
 
 body{
   margin:0;
@@ -37,11 +35,9 @@ body{
   padding:22px;
 }
 
-h2{
-  text-align:center;
-  margin-bottom:12px;
-}
+h2{text-align:center;margin-bottom:12px}
 
+/* Progress */
 .progress{
   height:8px;
   background:rgba(255,255,255,.2);
@@ -72,9 +68,7 @@ input,select{
   outline:none;
 }
 
-input[readonly]{
-  background:#e5e7eb;
-}
+input[readonly]{background:#e5e7eb}
 
 .subject-row{
   display:flex;
@@ -99,9 +93,7 @@ button{
   cursor:pointer;
 }
 
-button.secondary{
-  background:var(--muted);
-}
+button.secondary{background:var(--muted)}
 
 button.loading{
   background:var(--muted);
@@ -121,17 +113,51 @@ button.loading::after{
   animation:spin 1s linear infinite;
 }
 
-@keyframes spin{
-  to{transform:rotate(360deg)}
-}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 @media(max-width:768px){
   .grid{grid-template-columns:1fr}
+}
+
+/* ===== MODERN ALERT ===== */
+#alertBox{
+  position:fixed;
+  top:20px;
+  right:20px;
+  max-width:340px;
+  padding:14px 18px;
+  border-radius:14px;
+  font-weight:600;
+  color:white;
+  box-shadow:0 15px 35px rgba(0,0,0,.25);
+  animation:slideIn .4s ease;
+  display:none;
+  z-index:9999;
+}
+
+.alert-success{background:var(--success)}
+.alert-error{background:var(--error)}
+.alert-info{background:#3b82f6}
+
+@keyframes slideIn{
+  from{transform:translateX(120%)}
+  to{transform:translateX(0)}
+}
+
+@media(max-width:600px){
+  #alertBox{
+    right:50%;
+    transform:translateX(50%);
+    width:90%;
+  }
 }
 </style>
 </head>
 
 <body>
+
+<!-- ALERT -->
+<div id="alertBox"></div>
 
 <div class="card">
 <h2>🎓 PU College Admission</h2>
@@ -197,73 +223,85 @@ button.loading::after{
 </div>
 
 <script>
+/* ALERT */
+function showAlert(msg,type="success",time=3000){
+  const a=document.getElementById("alertBox");
+  a.className="";
+  a.classList.add("alert-"+type);
+  a.innerHTML=msg;
+  a.style.display="block";
+  setTimeout(()=>a.style.display="none",time);
+}
+
+/* STEPS */
 function nextStep(){
   step1.classList.remove("active");
   step2.classList.add("active");
   progressBar.style.width="100%";
 }
-
 function prevStep(){
   step2.classList.remove("active");
   step1.classList.add("active");
   progressBar.style.width="50%";
 }
 
+/* MARKS */
 function calc(){
-  let sum = 0;
+  let sum=0;
   document.querySelectorAll("#subjects input[type='number']").forEach(i=>{
-    const v = parseFloat(i.value);
-    if(!isNaN(v)) sum += v;
+    const v=parseFloat(i.value);
+    if(!isNaN(v)) sum+=v;
   });
-  obtainedMarks.value = sum;
-  percentage.value = sum ? ((sum/totalMarks.value)*100).toFixed(2) : "";
+  obtainedMarks.value=sum;
+  percentage.value=sum?((sum/totalMarks.value)*100).toFixed(2):"";
 }
 
-admissionForm.onsubmit = async e=>{
+/* SUBMIT */
+admissionForm.onsubmit=async e=>{
   e.preventDefault();
 
-  const btn = submitBtn;
-  if(btn.classList.contains("loading")) return;
+  const btn=submitBtn;
+  if(btn.classList.contains("loading"))return;
 
   btn.classList.add("loading");
-  btn.disabled = true;
+  btn.disabled=true;
+  showAlert("Submitting application…","info");
 
-  const data = {
-    name: name.value,
-    fatherName: fatherName.value,
-    motherName: motherName.value,
-    dob: dob.value,
-    mobile: mobile.value,
-    familyMobile: familyMobile.value,
-    email: email.value,
-    satsId: satsId.value,
-    sslcRegNo: sslcRegNo.value,
+  const data={
+    name:name.value,
+    fatherName:fatherName.value,
+    motherName:motherName.value,
+    dob:dob.value,
+    mobile:mobile.value,
+    familyMobile:familyMobile.value,
+    email:email.value,
+    satsId:satsId.value,
+    sslcRegNo:sslcRegNo.value,
     obtainedMarks:+obtainedMarks.value,
     totalMarks:+totalMarks.value,
     percentage:+percentage.value,
-    combination: combination.value,
+    combination:combination.value,
     permanentAddress:"NA",
     residentialAddress:"NA"
   };
 
   try{
-    const res = await fetch("/api/admission/apply",{
+    const res=await fetch("/api/admission/apply",{
       method:"POST",
-      headers:{ "Content-Type":"application/json" },
+      headers:{"Content-Type":"application/json"},
       body:JSON.stringify(data)
     });
 
     if(!res.ok) throw await res.text();
-    const result = await res.json();
+    const result=await res.json();
 
-    alert("✅ Application Submitted\nAdmission ID: "+result.admissionId);
-    console.log("Application Submitted "+result.admissionId);
-    location.href="check-status.html";
+    showAlert("✅ Application Submitted<br>ID: "+result.admissionId,"success",4000);
+    setTimeout(()=>location.href="check-status.html",2500);
 
   }catch(err){
-    alert("❌ "+err);
+    showAlert("❌ "+err,"error",5000);
     btn.classList.remove("loading");
-    btn.disabled = false;
+    btn.disabled=false;
   }
 };
 </script>
