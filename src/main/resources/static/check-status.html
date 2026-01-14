@@ -6,83 +6,122 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#f1f5f9;
+  font-family:Segoe UI,system-ui;
 }
-.box {
-    max-width: 400px;
-    margin: 80px auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 6px;
-    text-align: center;
+
+.card{
+  background:white;
+  padding:30px;
+  border-radius:14px;
+  width:100%;
+  max-width:420px;
+  box-shadow:0 20px 40px rgba(0,0,0,.1);
 }
-input, button {
-    width: 100%;
-    padding: 10px;
-    margin: 6px 0;
+
+h2{
+  text-align:center;
+  margin-bottom:20px;
 }
-button {
-    background: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
+
+input{
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border-radius:10px;
+  border:1px solid #cbd5f5;
 }
-.result {
-    margin-top: 10px;
-    font-weight: bold;
+
+button{
+  width:100%;
+  padding:12px;
+  background:#22c55e;
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
 }
-.error {
-    color: red;
+
+button.loading{
+  background:#94a3b8;
+  cursor:not-allowed;
+}
+
+#result{
+  margin-top:16px;
+  text-align:center;
+  font-weight:600;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-    <h3>Check Admission Status</h3>
+<div class="card">
+  <h2>Check Admission Status</h2>
 
-    <input type="text" id="admissionId" placeholder="Admission ID" required>
-    <input type="text" id="name" placeholder="Student Name (Exact)" required>
-    <input type="date" id="dob">
+  <input id="admissionId" placeholder="Admission ID" required>
+  <input id="name" placeholder="Student Name" required>
 
-    <button onclick="checkStatus()">Check Status</button>
+  <!-- DOB kept ONLY for UI (not sent) -->
+  <input type="date" id="dob">
 
-    <div id="result" class="result"></div>
+  <button id="checkBtn" onclick="checkStatus()">Check Status</button>
 
-    <br>
-    <button onclick="window.close()">Close</button>
+  <div id="result"></div>
 </div>
 
 <script>
-function checkStatus() {
+async function checkStatus(){
 
-    const admissionId = document.getElementById("admissionId").value.trim();
-    const name = document.getElementById("name").value.trim();
-    const dob = document.getElementById("dob").value; // yyyy-MM-dd
+  const admissionId = document.getElementById("admissionId").value.trim();
+  const name = document.getElementById("name").value.trim();
 
-    fetch(`/api/admission/status?admissionId=${encodeURIComponent(admissionId)}&name=${encodeURIComponent(name)}&dob=${dob}`, {
-        method: "POST"
-    })
-    .then(async res => {
-        const text = await res.text();
-        if (!res.ok) throw new Error(text);
-        return JSON.parse(text);
-    })
-    .then(data => {
-        document.getElementById("result").innerHTML =
-            `<span style="color:green">
-                Status: ${data.status}<br>
-                Course: ${data.combination}
-             </span>`;
-    })
-    .catch(err => {
-        console.error(err);
-        document.getElementById("result").innerHTML =
-            `<span class="error">No application found</span>`;
-    });
+  if(!admissionId || !name){
+    alert("Please enter Admission ID and Name");
+    return;
+  }
+
+  const btn = document.getElementById("checkBtn");
+  btn.classList.add("loading");
+  btn.disabled = true;
+  btn.innerText = "Checking...";
+
+  try{
+    const res = await fetch(
+      `/api/admission/status?admissionId=${encodeURIComponent(admissionId)}&name=${encodeURIComponent(name)}`,
+      { method:"POST" }
+    );
+
+    if(!res.ok){
+      throw await res.text();
+    }
+
+    const data = await res.json();
+
+    document.getElementById("result").innerHTML = `
+      <div style="color:#16a34a">✅ Application Found</div>
+      <p><b>Name:</b> ${data.name}</p>
+      <p><b>Combination:</b> ${data.combination}</p>
+      <p><b>Status:</b> ${data.status}</p>
+    `;
+
+  }catch(err){
+    document.getElementById("result").innerHTML =
+      `<span style="color:red">❌ No application found</span>`;
+  }
+  finally{
+    btn.classList.remove("loading");
+    btn.disabled = false;
+    btn.innerText = "Check Status";
+  }
 }
 </script>
 

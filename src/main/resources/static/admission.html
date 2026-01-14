@@ -9,6 +9,7 @@
 :root{
   --primary:#4f46e5;
   --success:#22c55e;
+  --muted:#64748b;
 }
 
 *{
@@ -41,7 +42,6 @@ h2{
   margin-bottom:12px;
 }
 
-/* Progress */
 .progress{
   height:8px;
   background:rgba(255,255,255,.2);
@@ -52,11 +52,10 @@ h2{
 .progress-bar{
   height:100%;
   width:50%;
-  background:linear-gradient(90deg,#4f46e5,#22c55e);
+  background:linear-gradient(90deg,var(--primary),var(--success));
   transition:.3s;
 }
 
-/* Steps */
 .step{display:none}
 .step.active{display:block}
 
@@ -82,9 +81,7 @@ input[readonly]{
   gap:10px;
   margin-bottom:10px;
 }
-.subject-row input{
-  flex:1;
-}
+.subject-row input{flex:1}
 
 .btns{
   display:flex;
@@ -103,17 +100,29 @@ button{
 }
 
 button.secondary{
-  background:#64748b;
+  background:var(--muted);
 }
 
 button.loading{
-  background:#64748b;
+  background:var(--muted);
   cursor:not-allowed;
-  opacity:.8;
+  opacity:.85;
 }
 
 button.loading::after{
-  content:" ⏳";
+  content:"";
+  width:16px;
+  height:16px;
+  border:2px solid white;
+  border-top-color:transparent;
+  border-radius:50%;
+  display:inline-block;
+  margin-left:8px;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
 }
 
 @media(max-width:768px){
@@ -168,7 +177,7 @@ button.loading::after{
 </div>
 
 <div class="grid" style="margin-top:14px">
-  <input type="number" id="obtainedMarks" placeholder="Total Obtained Marks *" required oninput="calc()">
+  <input type="number" id="obtainedMarks" placeholder="Total Obtained Marks" readonly>
   <input type="number" id="totalMarks" value="625" readonly>
   <input id="percentage" placeholder="Percentage" readonly>
   <select id="combination" required>
@@ -189,35 +198,35 @@ button.loading::after{
 
 <script>
 function nextStep(){
-  document.getElementById("step1").classList.remove("active");
-  document.getElementById("step2").classList.add("active");
-  document.getElementById("progressBar").style.width="100%";
+  step1.classList.remove("active");
+  step2.classList.add("active");
+  progressBar.style.width="100%";
 }
 
 function prevStep(){
-  document.getElementById("step2").classList.remove("active");
-  document.getElementById("step1").classList.add("active");
-  document.getElementById("progressBar").style.width="50%";
+  step2.classList.remove("active");
+  step1.classList.add("active");
+  progressBar.style.width="50%";
 }
 
 function calc(){
-  const o = document.getElementById("obtainedMarks").value;
-  const t = document.getElementById("totalMarks").value;
-  if(o){
-    document.getElementById("percentage").value =
-      ((o / t) * 100).toFixed(2);
-  }
+  let sum = 0;
+  document.querySelectorAll("#subjects input[type='number']").forEach(i=>{
+    const v = parseFloat(i.value);
+    if(!isNaN(v)) sum += v;
+  });
+  obtainedMarks.value = sum;
+  percentage.value = sum ? ((sum/totalMarks.value)*100).toFixed(2) : "";
 }
 
-document.getElementById("admissionForm").onsubmit = async (e)=>{
+admissionForm.onsubmit = async e=>{
   e.preventDefault();
 
-  const btn = document.getElementById("submitBtn");
+  const btn = submitBtn;
   if(btn.classList.contains("loading")) return;
 
   btn.classList.add("loading");
   btn.disabled = true;
-  btn.innerText = "Submitting...";
 
   const data = {
     name: name.value,
@@ -229,67 +238,31 @@ document.getElementById("admissionForm").onsubmit = async (e)=>{
     email: email.value,
     satsId: satsId.value,
     sslcRegNo: sslcRegNo.value,
-    obtainedMarks: +obtainedMarks.value,
-    totalMarks: +totalMarks.value,
-    percentage: +percentage.value,
+    obtainedMarks:+obtainedMarks.value,
+    totalMarks:+totalMarks.value,
+    percentage:+percentage.value,
     combination: combination.value,
-    permanentAddress: "NA",
-    residentialAddress: "NA"
+    permanentAddress:"NA",
+    residentialAddress:"NA"
   };
 
   try{
     const res = await fetch("/api/admission/apply",{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify(data)
+      body:JSON.stringify(data)
     });
 
-    if(!res.ok){
-      throw await res.text();
-    }
-
+    if(!res.ok) throw await res.text();
     const result = await res.json();
 
-    document.body.innerHTML = `
-      <div style="
-        min-height:100vh;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        background:#0f2027;
-        color:white;
-        text-align:center;
-        padding:20px;">
-        <div style="
-          background:#1f2933;
-          padding:30px;
-          border-radius:16px;
-          max-width:400px;
-          width:100%;">
-          <h2>✅ Application Submitted</h2>
-          <p style="margin:15px 0">
-            Admission ID:<br>
-            <b style="color:#22c55e">${result.admissionId}</b>
-          </p>
-          <p>Please check your email 📧</p>
-          <button onclick="location.href='check-status.html'"
-            style="margin-top:18px;
-            padding:12px 18px;
-            background:#22c55e;
-            border:none;
-            border-radius:10px;
-            font-weight:600;">
-            Check Status
-          </button>
-        </div>
-      </div>
-    `;
-  }
-  catch(err){
-    alert("❌ " + err);
+    alert("✅ Application Submitted\nAdmission ID: "+result.admissionId);
+    location.href="check-status.html";
+
+  }catch(err){
+    alert("❌ "+err);
     btn.classList.remove("loading");
     btn.disabled = false;
-    btn.innerText = "🚀 Submit Application";
   }
 };
 </script>
