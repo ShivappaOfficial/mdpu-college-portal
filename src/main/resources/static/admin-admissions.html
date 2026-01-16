@@ -13,13 +13,8 @@ body{
   color:#fff;
 }
 
-.container{
-  padding:20px;
-}
-
-h2{
-  margin-bottom:16px;
-}
+.container{padding:20px}
+h2{margin-bottom:16px}
 
 table{
   width:100%;
@@ -35,13 +30,8 @@ th,td{
   border-bottom:1px solid #1e293b;
 }
 
-th{
-  background:#1e40af;
-}
-
-tr:hover{
-  background:#020617cc;
-}
+th{background:#1e40af}
+tr:hover{background:#020617cc}
 
 button{
   padding:6px 12px;
@@ -53,6 +43,17 @@ button{
 
 .approve{background:#22c55e;color:#fff}
 .reject{background:#ef4444;color:#fff;margin-left:6px}
+
+.badge{
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.badge-approved{background:#22c55e}
+.badge-rejected{background:#ef4444}
+.badge-pending{background:#facc15;color:#000}
 
 .error{
   color:#f87171;
@@ -102,14 +103,10 @@ if(!token){
 async function loadAdmissions(){
   try{
     const res = await fetch(`${API_BASE}/api/admission/admin/all`,{
-      headers:{
-        "Authorization":"Bearer " + token
-      }
+      headers:{ "Authorization":"Bearer " + token }
     });
 
-    if(res.status === 401 || res.status === 403){
-      throw new Error("Unauthorized");
-    }
+    if(!res.ok) throw new Error("Unauthorized");
 
     const data = await res.json();
     tbody.innerHTML = "";
@@ -121,6 +118,25 @@ async function loadAdmissions(){
     }
 
     data.forEach(a=>{
+      let actionHtml = "";
+      let statusHtml = "";
+
+      if(a.status === "APPLICATION RECEIVED"){
+        statusHtml = `<span class="badge badge-pending">PENDING</span>`;
+        actionHtml = `
+          <button class="approve" onclick="approve(${a.id})">Approve</button>
+          <button class="reject" onclick="reject(${a.id})">Reject</button>
+        `;
+      }
+      else if(a.status === "APPROVED"){
+        statusHtml = `<span class="badge badge-approved">APPROVED</span>`;
+        actionHtml = "—";
+      }
+      else if(a.status === "REJECTED"){
+        statusHtml = `<span class="badge badge-rejected">REJECTED</span>`;
+        actionHtml = "—";
+      }
+
       tbody.innerHTML += `
         <tr>
           <td>${a.admissionId}</td>
@@ -128,18 +144,15 @@ async function loadAdmissions(){
           <td>${a.mobile}</td>
           <td>${a.email}</td>
           <td>${a.combination}</td>
-          <td>${a.status}</td>
-          <td>
-            <button class="approve" onclick="approve(${a.id})">Approve</button>
-            <button class="reject" onclick="reject(${a.id})">Reject</button>
-          </td>
+          <td>${statusHtml}</td>
+          <td>${actionHtml}</td>
         </tr>
       `;
     });
 
   }catch(err){
     tbody.innerHTML =
-      "<tr><td colspan='7' class='error'>❌ Failed to load data (check login)</td></tr>";
+      "<tr><td colspan='7' class='error'>❌ Failed to load data</td></tr>";
     console.error(err);
   }
 }
@@ -152,10 +165,7 @@ async function approve(id){
 
   await fetch(`${API_BASE}/api/admission/admin/approve/${id}`,{
     method:"PUT",
-    headers:{
-      "Authorization":"Bearer " + token,
-      "Content-Type":"application/json"
-    }
+    headers:{ "Authorization":"Bearer " + token }
   });
 
   alert("✅ Application Approved");
@@ -168,10 +178,7 @@ async function reject(id){
 
   await fetch(`${API_BASE}/api/admission/admin/reject/${id}`,{
     method:"PUT",
-    headers:{
-      "Authorization":"Bearer " + token,
-      "Content-Type":"application/json"
-    }
+    headers:{ "Authorization":"Bearer " + token }
   });
 
   alert("❌ Application Rejected");
