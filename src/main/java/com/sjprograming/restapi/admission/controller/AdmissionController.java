@@ -84,26 +84,4 @@ public class AdmissionController {
                 );
     }
 
-
-
-    // ✅ CHECK ADMISSION STATUS
-//    @PostMapping("/status")
-//    public ResponseEntity<?> checkStatus(
-//    		@RequestParam String admissionId,
-//            @RequestParam String name
-//    ) {
-//        Optional<Admission> result =
-//        		admissionRepository.findByAdmissionIdAndNameIgnoreCase(
-//        				admissionId.trim(),
-//        	            name.trim()
-//        			);
-//
-//        if (result.isPresent()) {
-//            return ResponseEntity.ok(result.get());
-//        } else {
-//            return ResponseEntity
-//                .badRequest()
-//                .body("No application found");
-//        }
-//    }
 }
