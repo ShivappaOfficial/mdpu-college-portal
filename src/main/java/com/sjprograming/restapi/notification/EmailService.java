@@ -1,9 +1,11 @@
 package com.sjprograming.restapi.notification;
 
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -11,11 +13,8 @@ import org.springframework.stereotype.Service;
 @Async
 public class EmailService {
 
-    private final JavaMailSender mailSender;
-
-    public EmailService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
-    }
+    @Value("${SENDGRID_API_KEY}")
+    private String sendGridApiKey;
 
     private String safeName(String name) {
         return (name == null || name.trim().isEmpty())
@@ -31,40 +30,15 @@ public class EmailService {
             String course,
             String mobile
     ) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper =
-                    new MimeMessageHelper(message, false, "UTF-8");
+        String body =
+                "Dear " + safeName(studentName) + ",\n\n" +
+                "Your admission application has been successfully received.\n\n" +
+                "Admission ID: " + admissionId + "\n" +
+                "Course Applied: " + course + "\n" +
+                "Mobile: " + mobile + "\n\n" +
+                "Regards,\nMDR PU College";
 
-            helper.setFrom(new InternetAddress(
-                    "shivuyk57@gmail.com",
-                    "MDR PU College"
-            ));
-
-            helper.setTo(toEmail);
-
-            helper.setSubject("Admission Application Received – MDR PU College");
-
-            helper.setText(
-                    "Dear " + safeName(studentName) + ",\n\n" +
-                    "Your admission application has been successfully received.\n\n" +
-                    "Admission ID: " + admissionId + "\n" +
-                    "Course Applied: " + course + "\n" +
-                    "Mobile Number: " + mobile + "\n\n" +
-                    "Our admission team will contact you shortly.\n\n" +
-                    "Regards,\n" +
-                    "MDR PU College\n" +
-                    "Hiresindhogi, Karnataka",
-                    false
-            );
-
-            mailSender.send(message);
-            System.out.println("✅ Admission email sent to " + toEmail);
-
-        } catch (Exception e) {
-            System.err.println("⚠️ Email failed: " + e.getMessage());
-            e.printStackTrace();
-        }
+        sendMail(toEmail, "Admission Application Received – MDR PU College", body);
     }
 
     // ================= APPROVED =================
@@ -73,12 +47,13 @@ public class EmailService {
             String studentName,
             String admissionId
     ) {
-        sendStatusMail(
+        sendMail(
                 toEmail,
-                studentName,
-                admissionId,
-                "APPROVED",
-                "Congratulations! Your admission has been approved."
+                "Admission Approved – MDR PU College",
+                "Dear " + safeName(studentName) + ",\n\n" +
+                "🎉 Congratulations! Your admission has been APPROVED.\n\n" +
+                "Admission ID: " + admissionId + "\n\n" +
+                "Regards,\nMDR PU College"
         );
     }
 
@@ -88,50 +63,39 @@ public class EmailService {
             String studentName,
             String admissionId
     ) {
-        sendStatusMail(
+        sendMail(
                 toEmail,
-                studentName,
-                admissionId,
-                "REJECTED",
-                "We regret to inform you that your admission was not approved."
+                "Admission Update – MDR PU College",
+                "Dear " + safeName(studentName) + ",\n\n" +
+                "We regret to inform you that your admission was NOT approved.\n\n" +
+                "Admission ID: " + admissionId + "\n\n" +
+                "Regards,\nMDR PU College"
         );
     }
 
-    private void sendStatusMail(
-            String toEmail,
-            String studentName,
-            String admissionId,
-            String status,
-            String messageText
-    ) {
+    // ================= CORE SEND METHOD =================
+    private void sendMail(String to, String subject, String contentText) {
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper =
-                    new MimeMessageHelper(message, false, "UTF-8");
+            Email from = new Email("shivuyk57@gmail.com", "MDR PU College");
+            Email toEmail = new Email(to);
+            Content content = new Content("text/plain", contentText);
 
-            helper.setFrom(new InternetAddress(
-                    "shivuyk57@gmail.com",
-                    "MDR PU College"
-            ));
+            Mail mail = new Mail(from, subject, toEmail, content);
 
-            helper.setTo(toEmail);
-            helper.setSubject("Admission Status Update – MDR PU College");
+            SendGrid sg = new SendGrid(sendGridApiKey);
+            Request request = new Request();
 
-            helper.setText(
-                    "Dear " + safeName(studentName) + ",\n\n" +
-                    messageText + "\n\n" +
-                    "Admission ID: " + admissionId + "\n" +
-                    "Status: " + status + "\n\n" +
-                    "Regards,\n" +
-                    "MDR PU College",
-                    false
-            );
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
 
-            mailSender.send(message);
-            System.out.println("✅ Status mail sent: " + status);
+            Response response = sg.api(request);
+
+            System.out.println("✅ Mail sent. Status: " + response.getStatusCode());
 
         } catch (Exception e) {
-            System.err.println("⚠️ Status email failed: " + e.getMessage());
+            System.err.println("❌ SendGrid API mail failed");
+            e.printStackTrace();
         }
     }
 }
