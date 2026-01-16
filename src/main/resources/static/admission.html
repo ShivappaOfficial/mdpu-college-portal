@@ -12,129 +12,42 @@
   --error:#ef4444;
   --muted:#64748b;
 }
-
 *{box-sizing:border-box;font-family:Segoe UI,system-ui}
-
 body{
-  margin:0;
-  min-height:100vh;
+  margin:0;min-height:100vh;
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:16px;
-  color:#fff;
+  display:flex;justify-content:center;align-items:center;
+  padding:16px;color:#fff;
 }
-
 .card{
-  width:100%;
-  max-width:900px;
+  width:100%;max-width:900px;
   background:rgba(255,255,255,.12);
   backdrop-filter:blur(14px);
-  border-radius:18px;
-  padding:22px;
+  border-radius:18px;padding:22px;
 }
-
 h2{text-align:center;margin-bottom:12px}
-
-/* Progress */
-.progress{
-  height:8px;
-  background:rgba(255,255,255,.2);
-  border-radius:10px;
-  overflow:hidden;
-  margin-bottom:18px;
-}
-.progress-bar{
-  height:100%;
-  width:50%;
-  background:linear-gradient(90deg,var(--primary),var(--success));
-  transition:.3s;
-}
-
+.progress{height:8px;background:rgba(255,255,255,.2);border-radius:10px;overflow:hidden;margin-bottom:18px}
+.progress-bar{height:100%;width:50%;background:linear-gradient(90deg,var(--primary),var(--success));transition:.3s}
 .step{display:none}
 .step.active{display:block}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-
-input,select{
-  padding:12px;
-  border-radius:10px;
-  border:none;
-  outline:none;
-}
-
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+input,select{padding:12px;border-radius:10px;border:none;outline:none}
 input[readonly]{background:#e5e7eb}
-
-.subject-row{
-  display:flex;
-  gap:10px;
-  margin-bottom:10px;
-}
+.subject-row{display:flex;gap:10px;margin-bottom:10px}
 .subject-row input{flex:1}
-
-.btns{
-  display:flex;
-  justify-content:space-between;
-  margin-top:20px;
-}
-
-button{
-  padding:12px 22px;
-  border:none;
-  border-radius:12px;
-  background:var(--primary);
-  color:white;
-  font-weight:600;
-  cursor:pointer;
-}
-
+.btns{display:flex;justify-content:space-between;margin-top:20px}
+button{padding:12px 22px;border:none;border-radius:12px;background:var(--primary);color:white;font-weight:600;cursor:pointer}
 button.secondary{background:var(--muted)}
-
-button.loading{
-  background:var(--muted);
-  cursor:not-allowed;
-  opacity:.85;
-}
-
-button.loading::after{
-  content:"";
-  width:16px;
-  height:16px;
-  border:2px solid white;
-  border-top-color:transparent;
-  border-radius:50%;
-  display:inline-block;
-  margin-left:8px;
-  animation:spin 1s linear infinite;
-}
-
-@keyframes spin{to{transform:rotate(360deg)}}
-
-@media(max-width:768px){
-  .grid{grid-template-columns:1fr}
-}
-
-/* Alert */
+button.loading{background:var(--muted);cursor:not-allowed;opacity:.85}
 #alertBox{
-  position:fixed;
-  top:20px;
-  right:20px;
-  max-width:340px;
-  padding:14px 18px;
-  border-radius:14px;
-  font-weight:600;
-  color:white;
-  display:none;
-  z-index:9999;
+  position:fixed;top:20px;right:20px;
+  padding:14px 18px;border-radius:14px;
+  font-weight:600;color:white;display:none;z-index:9999
 }
 .alert-success{background:var(--success)}
 .alert-error{background:var(--error)}
 .alert-info{background:#3b82f6}
+@media(max-width:768px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -173,7 +86,6 @@ button.loading::after{
 
 <!-- STEP 2 -->
 <div class="step" id="step2">
-
 <h4>📚 Subject-wise Marks</h4>
 
 <div id="subjects">
@@ -200,81 +112,97 @@ button.loading::after{
   <button type="button" class="secondary" onclick="prevStep()">← Back</button>
   <button type="submit" id="submitBtn">🚀 Submit Application</button>
 </div>
-
 </div>
+
 </form>
 </div>
 
 <script>
-const alertBox = document.getElementById("alertBox");
+// ===== ELEMENT BINDING (CRITICAL FIX) =====
+const elName = document.getElementById("name");
+const elFatherName = document.getElementById("fatherName");
+const elMotherName = document.getElementById("motherName");
+const elMobile = document.getElementById("mobile");
+const elEmail = document.getElementById("email");
+const elSatsId = document.getElementById("satsId");
+const elSslcRegNo = document.getElementById("sslcRegNo");
 
+// ===== ALERT =====
 function showAlert(msg,type){
-  alertBox.className = "alert-" + type;
-  alertBox.innerHTML = msg;
-  alertBox.style.display = "block";
-  setTimeout(()=>alertBox.style.display="none",3000);
+  const a=document.getElementById("alertBox");
+  a.className="alert-"+type;
+  a.innerHTML=msg;
+  a.style.display="block";
+  setTimeout(()=>a.style.display="none",3000);
 }
 
+// ===== STEPS =====
 function nextStep(){
   step1.classList.remove("active");
   step2.classList.add("active");
   progressBar.style.width="100%";
 }
-
 function prevStep(){
   step2.classList.remove("active");
   step1.classList.add("active");
   progressBar.style.width="50%";
 }
 
+// ===== MARKS =====
 function calc(){
-  let sum = 0;
+  let sum=0;
   document.querySelectorAll("#subjects input[type=number]").forEach(i=>{
-    if(i.value) sum += +i.value;
+    if(i.value) sum+=+i.value;
   });
-  obtainedMarks.value = sum;
-  percentage.value = sum ? ((sum/625)*100).toFixed(2) : "";
+  obtainedMarks.value=sum;
+  percentage.value=sum?((sum/625)*100).toFixed(2):"";
 }
 
-admissionForm.onsubmit = async e =>{
+// ===== SUBMIT =====
+admissionForm.onsubmit=async e=>{
   e.preventDefault();
   submitBtn.classList.add("loading");
-  submitBtn.disabled = true;
+  submitBtn.disabled=true;
   showAlert("Submitting application…","info");
 
-  const data = {
-    name: name.value,
-    fatherName: fatherName.value,
-    motherName: motherName.value,
+  const data={
+    name: elName.value.trim(),
+    fatherName: elFatherName.value.trim(),
+    motherName: elMotherName.value.trim(),
     dob: dob.value,
-    mobile: mobile.value,
+
+    mobile: elMobile.value.trim(),
     familyMobile: familyMobile.value,
-    email: email.value,
-    satsId: satsId.value,
-    sslcRegNo: sslcRegNo.value,
+    email: elEmail.value.trim(),
+
+    satsId: elSatsId.value.trim(),
+    sslcRegNo: elSslcRegNo.value.trim(),
+
     kannada:+kannada.value,
     english:+english.value,
     hindi:+hindi.value,
     mathematics:+maths.value,
     science:+science.value,
     socialScience:+social.value,
+
     obtainedMarks:+obtainedMarks.value,
     totalMarks:+totalMarks.value,
     percentage:+percentage.value,
     combination:combination.value,
+
     permanentAddress:"NA",
     residentialAddress:"NA",
     others:"{}"
   };
 
   try{
-    const res = await fetch("/api/admission/apply",{
+    const res=await fetch("/api/admission/apply",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(data)
     });
     if(!res.ok) throw await res.text();
-    const result = await res.json();
+    const result=await res.json();
     showAlert("✅ Submitted<br>ID: "+result.admissionId,"success");
     setTimeout(()=>location.href="check-status.html",2000);
   }catch(err){
