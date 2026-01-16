@@ -2,186 +2,177 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin – Admission Applications</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- Bootstrap -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<title>Admin – View Admission Applications</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body{
-    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    min-height:100vh;
-    color:#fff;
+  margin:0;
+  font-family:Segoe UI,system-ui;
+  background:#0f172a;
+  color:#fff;
 }
 
-.page-title{
-    font-weight:600;
-    margin-bottom:20px;
+.container{
+  padding:20px;
 }
 
-.glass{
-    background: rgba(255,255,255,.12);
-    backdrop-filter: blur(12px);
-    border-radius:16px;
-    padding:20px;
+h2{
+  margin-bottom:16px;
 }
 
-table th{
-    background:#1e3c72 !important;
-    color:white;
-    white-space: nowrap;
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#020617;
+  border-radius:12px;
+  overflow:hidden;
 }
 
-table td{
-    background: rgba(255,255,255,0.05);
-    color:white;
-    vertical-align: middle;
+th,td{
+  padding:12px;
+  text-align:center;
+  border-bottom:1px solid #1e293b;
 }
 
-.badge{
-    font-size: 0.85rem;
+th{
+  background:#1e40af;
 }
 
-@media (max-width:768px){
-    .page-title{
-        font-size:18px;
-        text-align:center;
-    }
+tr:hover{
+  background:#020617cc;
+}
+
+button{
+  padding:6px 12px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.approve{
+  background:#22c55e;
+  color:#fff;
+}
+
+.reject{
+  background:#ef4444;
+  color:#fff;
+  margin-left:6px;
+}
+
+.error{
+  color:#f87171;
+  text-align:center;
+  padding:16px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container py-4">
+<div class="container">
+  <h2>📄 Admission Applications (Admin)</h2>
 
-    <h4 class="page-title">📋 Admission Applications (Admin)</h4>
-
-    <div class="glass">
-
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover text-center align-middle mb-0">
-                <thead>
-                    <tr>
-                        <th>Admission ID</th>
-                        <th>Name</th>
-                        <th>Mobile</th>
-                        <th>Email</th>
-                        <th>Course</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    <tr>
-                        <td colspan="7">Loading...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-    </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Admission ID</th>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>Course</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <tr>
+        <td colspan="7">Loading...</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <script>
-const API_BASE = "http://localhost:8080";
-const token = localStorage.getItem("token");
-const tbody = document.getElementById("tableBody");
+const API_BASE = "https://mdpu-college-portal.onrender.com";
 
-/* 🔐 Auth check */
+// 🔐 GET JWT TOKEN
+const token = localStorage.getItem("token");
+
 if(!token){
-    tbody.innerHTML = `<tr><td colspan="7">❌ Unauthorized</td></tr>`;
-    throw new Error("No JWT token");
+  document.getElementById("tableBody").innerHTML =
+    "<tr><td colspan='7' class='error'>❌ Not logged in</td></tr>";
+  throw new Error("JWT token missing");
 }
 
-/* 🔄 Load applications */
-fetch(`${API_BASE}/api/admission/admin/all`, {
-    headers: {
-        "Authorization": "Bearer " + token
-    }
+// 📥 LOAD APPLICATIONS
+fetch(`${API_BASE}/api/admission/admin/all`,{
+  headers:{
+    "Authorization":"Bearer " + token
+  }
 })
-.then(res => {
-    if(!res.ok) throw new Error("Failed to load data");
-    return res.json();
+.then(res=>{
+  if(!res.ok) throw new Error("Unauthorized");
+  return res.json();
 })
-.then(data => {
+.then(data=>{
+  const tbody=document.getElementById("tableBody");
+  tbody.innerHTML="";
 
-    tbody.innerHTML = "";
-
-    if(data.length === 0){
-        tbody.innerHTML = `<tr><td colspan="7">No Applications Found</td></tr>`;
-        return;
-    }
-
-    data.forEach(a => {
-
-        let badgeClass =
-            a.status === "APPROVED" ? "bg-success" :
-            a.status === "REJECTED" ? "bg-danger" :
-            "bg-warning text-dark";
-
-        tbody.innerHTML += `
-        <tr>
-            <td>${a.admissionId}</td>
-            <td>${a.name}</td>
-            <td>${a.mobile}</td>
-            <td>${a.email ?? "-"}</td>
-            <td>${a.combination}</td>
-            <td>
-                <span class="badge ${badgeClass}">
-                    ${a.status}
-                </span>
-            </td>
-            <td>
-                <button class="btn btn-success btn-sm me-1"
-                    onclick="approve(${a.id})"
-                    ${a.status === 'APPROVED' ? 'disabled' : ''}>
-                    <i class="bi bi-check-lg"></i>
-                </button>
-
-                <button class="btn btn-danger btn-sm"
-                    onclick="reject(${a.id})"
-                    ${a.status === 'REJECTED' ? 'disabled' : ''}>
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </td>
-        </tr>
-        `;
-    });
-})
-.catch(err => {
+  if(data.length===0){
     tbody.innerHTML =
-        `<tr><td colspan="7">❌ ${err.message}</td></tr>`;
+      "<tr><td colspan='7'>No applications found</td></tr>";
+    return;
+  }
+
+  data.forEach(a=>{
+    tbody.innerHTML+=`
+      <tr>
+        <td>${a.admissionId}</td>
+        <td>${a.name ?? "Student"}</td>
+        <td>${a.mobile}</td>
+        <td>${a.email}</td>
+        <td>${a.combination}</td>
+        <td>${a.status}</td>
+        <td>
+          <button class="approve" onclick="approve(${a.id})">Approve</button>
+          <button class="reject" onclick="reject(${a.id})">Reject</button>
+        </td>
+      </tr>
+    `;
+  });
+})
+.catch(err=>{
+  document.getElementById("tableBody").innerHTML =
+    "<tr><td colspan='7' class='error'>❌ Failed to fetch data</td></tr>";
 });
 
-/* ✅ Approve */
+// ✅ APPROVE
 function approve(id){
-    if(!confirm("Approve this application?")) return;
-
-    fetch(`${API_BASE}/api/admission/admin/approve/${id}`, {
-        method: "PUT",
-        headers:{
-            "Authorization": "Bearer " + token
-        }
-    })
-    .then(() => location.reload())
-    .catch(() => alert("Approve failed"));
+  fetch(`${API_BASE}/api/admission/admin/approve/${id}`,{
+    method:"PUT",
+    headers:{
+      "Authorization":"Bearer " + token
+    }
+  }).then(()=>{
+    alert("Approved");
+    location.reload();
+  });
 }
 
-/* ❌ Reject */
+// ❌ REJECT
 function reject(id){
-    if(!confirm("Reject this application?")) return;
-
-    fetch(`${API_BASE}/api/admission/admin/reject/${id}`, {
-        method: "PUT",
-        headers:{
-            "Authorization": "Bearer " + token
-        }
-    })
-    .then(() => location.reload())
-    .catch(() => alert("Reject failed"));
+  fetch(`${API_BASE}/api/admission/admin/reject/${id}`,{
+    method:"PUT",
+    headers:{
+      "Authorization":"Bearer " + token
+    }
+  }).then(()=>{
+    alert("Rejected");
+    location.reload();
+  });
 }
 </script>
 
