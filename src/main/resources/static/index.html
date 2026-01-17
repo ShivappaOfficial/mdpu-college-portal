@@ -34,6 +34,7 @@
             --accent: #00cc99;
             --light: #f0f4f8;
             --dark: #0f172a;
+            --yellow:rgb(241, 248, 7);
             --gray: #64748b;
             --gray-light: #e2e8f0;
             --card: #ffffff;
@@ -42,6 +43,7 @@
             --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
             --radius: 16px;
             --radius-sm: 8px;
+            --highlight: #00cc99;
         }
         
         body {
@@ -51,6 +53,9 @@
             line-height: 1.6;
             transition: var(--transition);
             overflow-x: hidden;
+            background-color: var(--highlight);
+           background: radial-gradient(circle,rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+           /* background: linear-gradient(90deg,rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);*/
         }
         
         h1, h2, h3, h4 {
@@ -66,7 +71,7 @@
         
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -275,9 +280,10 @@
             border-top: 2px solid var(--gray-light);
             border-bottom: 2px solid var(--gray-light);
             margin-top: 80px;
-            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
+   			background: linear-gradient(90deg,rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 9%, rgba(0, 212, 255, 1) 100%);
             position: relative;
             z-index: 10;
+           
         }
         
         .latest-label {
@@ -298,13 +304,14 @@
             overflow: hidden;
             white-space: nowrap;
             padding: 12px 0;
+            padding-top: 22px;
             position: relative;
         }
         
         .ticker-content {
             display: inline-block;
             padding-left: 100%;
-            animation: ticker 25s linear infinite;
+            animation: ticker 50s linear infinite;
         }
         
         @keyframes ticker {
@@ -477,60 +484,33 @@
         }
         
         /* HERO SECTION - Updated for desktop news sidebar */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            padding-top: 60px;
-        }
-        
-        .hero-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(0, 64, 128, 0.9), rgba(0, 153, 255, 0.7)), 
-                        url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover no-repeat;
-            z-index: -1;
-        }
-        
-        .hero-container {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-            width: 100%;
-            position: relative;
-        }
-        
-        .hero-content {
-            flex: 1;
-            color: white;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .hero h1 {
-            font-size: 56px;
-            margin-bottom: 20px;
-            line-height: 1.1;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .hero p {
-            font-size: 20px;
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 20px;
-            margin-top: 40px;
-        }
-        
+/* outer wrapper */
+.hero-wrapper {
+    padding: 30px 0; /* space from navbar & below */
+}
+
+/* actual hero background */
+.hero {
+    max-width: 1200px;       /* 🔥 controls left & right size */
+    margin: 0 auto;          /* center hero */
+    padding: 60px 50px;
+    background: linear-gradient(180deg, #005b8f, #009fdc);
+    color: #fff;
+    border-radius: 14px;     /* modern look */
+}
+
+/* text size tuning */
+.hero h1 {
+    font-size: 2.6rem;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    max-width: 700px;
+    margin-bottom: 25px;
+    opacity: 0.95;
+}
+
         /* Glass Effect Sections */
         .glass-section {
             background: rgba(255, 255, 255, 0.15);
@@ -552,6 +532,96 @@
             background: rgba(255,255,255,0.25);
         }
         
+        /* section background */
+.glass-section {
+    padding: 60px 0;
+  /*  background: linear-gradient(180deg, #00c896, #00b3a4);*/
+}
+
+
+
+/* title */
+.section-title h2 {
+    font-size: 2.5rem;
+    color: #003b73;
+    margin-bottom: 8px;
+}
+
+.section-title p {
+    color: #0b3f3f;
+    margin-bottom: 35px;
+}
+
+/* form layout */
+form {
+    max-width: 700px;
+    margin: auto;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 15px;
+}
+
+textarea {
+    resize: none;
+    margin-bottom: 20px;
+}
+
+/* button */
+.btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: #003b73;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-submit:hover {
+    background: #002a55;
+}
+
+/* mobile */
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #003b73;
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.4s ease;
+    z-index: 9999;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
         /* STATS SECTION */
         .stats-grid {
             display: grid;
@@ -561,11 +631,13 @@
         
         .stat-card {
             background-color: var(--card);
-            padding: 40px 30px;
+            padding: 10px 30px;
             border-radius: var(--radius);
             text-align: center;
             box-shadow: var(--shadow);
             transition: var(--transition);
+             display: block; /* IMPORTANT */
+    		will-change: transform;
         }
         
         .stat-card:hover {
@@ -791,6 +863,19 @@
             right: 5px;
         }
         
+        #aboutSection {
+    padding: 80px 20px;
+    background: linear-gradient(180deg, #f4f8fc, #eef3f9);
+}
+
+#aboutSection .container {
+    max-width: 1000px;
+    background: #fff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+}
+
         /* DASHBOARD STYLES */
         .offcanvas {
             background: var(--light);
@@ -925,35 +1010,40 @@
         }
         
         /* CTA SECTION */
-        .cta-section {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            text-align: center;
-        }
-        
-        .cta-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .cta-content h2 {
-            font-size: 40px;
-            margin-bottom: 20px;
-        }
-        
-        .cta-content p {
-            font-size: 18px;
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 40px;
-        }
-        
+       /* outer spacing */
+.admission-wrapper {
+    padding: 40px 0;
+}
+
+/* inner background box */
+.admission-box {
+    max-width: 1200px;          /* 🔥 reduce width from sides */
+    margin: 0 auto;             /* center */
+    padding: 60px 40px;
+    background: linear-gradient(180deg, #005fa3, #0b8be0);
+    color: #fff;
+    text-align: center;
+    border-radius: 14px;
+}
+
+/* text */
+.admission-box h2 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.admission-box p {
+    max-width: 700px;
+    margin: 0 auto 25px;
+    opacity: 0.95;
+}
+
+/* buttons */
+.admission-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
         /* FOOTER */
         footer {
             background-color: var(--primary);
@@ -1147,6 +1237,13 @@
             transform: scale(1.1);
         }
         
+        /* Hide Dashboard button on mobile */
+@media (max-width: 768px) {
+    .dashboard-btn {
+        display: none !important;
+    }
+}
+
         /* RESPONSIVE DESIGN */
         @media (min-width: 1200px) {
             /* Desktop: Show news sidebar */
@@ -1340,34 +1437,43 @@
                 <div class="logo-icon">MDR</div>
                 <div class="logo-text">
                     <h1>MDR PU Science College</h1>
-                    <p>Hiresindhogi | Excellence in Education</p>
+                   <p>Hiresindhogi | Excellence in Education</p>
                 </div>
             </a>
             
             <nav>
                 <div class="nav-links">
-                    <a href="#" class="active">Home</a>
+                    <a href="javascript:void(0)" onclick="showHome()"class="active">Home</a>
                     <a href="#programs">Programs</a>
-                    <a href="#gallery">Gallery</a>
+                    <a href="gallery.html">Gallery</a>
                     <a href="admission.html">Admission</a>
                     <div class="dropdown">
-                        <a href="#" class="dropdown-toggle">More ▾</a>
+                        <a href="#" class="dropdown-toggle">More </a>
                         <ul class="dropdown-content">
                             <li><a href="alumni.html">Join As Alumni</a></li>
                             <li><a href="alumni-batches.html">View Alumni</a></li>
                             <li><a href="check-status.html">Application Status</a></li>
-                            <li><a href="about.html">About Us</a></li>
-                            <li><a href="teacherinfo.html">Contact</a></li>
+                           <!-- <li><a href="javascript:void(0)" onclick="openAbout(event)">About Us</a></li>
+                            <li><a href="#Contact">Contact</a></li>-->
                         </ul>
                     </div>
-                    <a href="#testimonials">Testimonials</a>
-                    <a href="#contact">Contact</a>
+                    <!--<a href="#testimonials">Testimonials</a>-->
+                    <!--<a href="#contact">Contact</a>-->
+                     <a href="admin.html" class="btn" style="background-color: var(--yellow);
+            color: var(--dark);">Admin</a>
                 </div>
                 
-                <div class="nav-actions">
-                    <a href="admin.html" class="btn">Admin</a>
-                    <button type="button" class="btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">Dashboard</button>
-                </div>
+               <div class="nav-actions">
+    <button 
+        type="button"
+        class="btn dashboard-btn"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasTop"
+        aria-controls="offcanvasTop">
+        Dashboard
+    </button>
+</div>
+
             </nav>
             
             <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -1378,7 +1484,7 @@
     
     <!-- Latest News Ticker - VISIBLE ON ALL DEVICES -->
     <div class="latest-news">
-        <div class="latest-label">📢 Latest News</div>
+        <div class="latest-label">📢 College Updates </div>
         <div class="ticker">
             <div class="ticker-content" id="latestNotesTicker">
                 <!-- News items will be added by JavaScript -->
@@ -1386,70 +1492,23 @@
         </div>
     </div>
     
+   
+
     <!-- HERO SECTION -->
-    <section class="hero">
-        <div class="hero-bg"></div>
-        
-        <div class="container hero-container">
-            <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
-                <h1>Shaping Bright Futures Through Quality Education</h1>
-                <p>At MDR PU College, we are committed to providing holistic education that combines academic excellence with character building and personality development.</p>
-                <div class="hero-buttons">
-                    <a href="#admission" class="btn">Admissions 2025-26</a>
-                    <a href="#programs" class="btn btn-secondary">Explore Programs</a>
-                </div>
-            </div>
-            
-            <!-- Desktop News Sidebar - VISIBLE ONLY ON DESKTOP -->
-            <div class="news-sidebar-desktop" data-aos="fade-left" data-aos-delay="300">
-                <div class="news-header">
-                    <h3><i class="fas fa-newspaper"></i> College Updates</h3>
-                    <span class="news-badge">Live</span>
-                </div>
-                
-                <div class="news-list">
-                    <div class="news-item-sidebar" onclick="showNewsDetail(1)">
-                        <div class="news-date">
-                            <i class="far fa-calendar"></i> Feb 15, 2026
-                        </div>
-                        <div class="news-title">Online Admissions Portal Open</div>
-                        <div class="news-excerpt">Registration for 2026-27 academic year now available online.</div>
-                    </div>
-                    
-                    <div class="news-item-sidebar" onclick="showNewsDetail(2)">
-                        <div class="news-date">
-                            <i class="far fa-calendar"></i> Feb 10, 2026
-                        </div>
-                        <div class="news-title">Annual Sports Day 2026</div>
-                        <div class="news-excerpt">College sports day scheduled for March 5th, 2026.</div>
-                    </div>
-                    
-                    <div class="news-item-sidebar" onclick="showNewsDetail(3)">
-                        <div class="news-date">
-                            <i class="far fa-calendar"></i> Feb 5, 2026
-                        </div>
-                        <div class="news-title">Science Exhibition Winners</div>
-                        <div class="news-excerpt">Our students secured 1st prize at State Level Science Fair.</div>
-                    </div>
-                    
-                    <div class="news-item-sidebar" onclick="showNewsDetail(4)">
-                        <div class="news-date">
-                            <i class="far fa-calendar"></i> Jan 28, 2026
-                        </div>
-                        <div class="news-title">New Computer Lab Inaugurated</div>
-                        <div class="news-excerpt">State-of-the-art computer lab with 50+ systems now operational.</div>
-                    </div>
-                </div>
-                
-                <div class="news-view-all">
-                    <a href="#">
-                        View All Updates
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+    	<section class="hero-wrapper">
+    		<div class="hero">
+       			 <h1>Shaping Bright Futures Through Quality Education</h1>
+        			<p>
+            			At MDR PU College, we are committed to providing holistic education
+            			that combines academic excellence with character building.
+        			</p>
+
+        		<div class="hero-buttons">
+            			<a href="#admission" class="btn btn-primary">Admissions 2025-26</a>
+            			<a href="#programs" class="btn btn-outline">Explore Programs</a>
+        		</div>
+    		</div>
+		</section>
     
     <!-- STATS SECTION -->
     <section class="section">
@@ -1520,7 +1579,7 @@
             <div class="programs-grid">
                 <div class="program-card" data-aos="fade-up" data-aos-delay="100">
                     <div class="program-img">
-                        <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Science Program">
+                        <img src="https://images.unsplash.com/photo-1623239260654-329189722b4b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0" alt="Science Program">
                     </div>
                     <div class="program-content">
                         <h3>Science (PCMB)</h3>
@@ -1537,37 +1596,39 @@
                 
                 <div class="program-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="program-img">
-                        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Commerce Program">
+                        <img src="https://plus.unsplash.com/premium_photo-1661878265739-da90bc1af051?auto=format&fit=crop&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=80&w=1086" alt="Commerce Program">
                     </div>
                     <div class="program-content">
-                        <h3>Commerce</h3>
-                        <p>Specialized curriculum in Accountancy, Business Studies, Economics, and Mathematics with practical exposure.</p>
+                        <h3>Science (PCMCs)</h3>
+                        <p>Comprehensive program in Physics, Chemistry, Mathematics, and Computer Science with well-equipped labs and expert faculty.</p>
                         <div class="program-features">
-                            <span>Accountancy</span>
-                            <span>Business Studies</span>
-                            <span>Economics</span>
+                            <span>Physics</span>
+                            <span>Chemistry</span>
                             <span>Mathematics</span>
+                            <span>Computer Science</span>
                         </div>
                         <a href="#admission" class="btn btn-secondary">Learn More</a>
                     </div>
                 </div>
                 
                 <div class="program-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="program-img">
-                        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Arts Program">
-                    </div>
-                    <div class="program-content">
-                        <h3>Arts (Humanities)</h3>
-                        <p>Diverse subjects in History, Political Science, Sociology, Psychology, and Economics with focus on critical thinking.</p>
-                        <div class="program-features">
-                            <span>History</span>
-                            <span>Political Science</span>
-                            <span>Sociology</span>
-                            <span>Economics</span>
-                        </div>
-                        <a href="#admission" class="btn btn-secondary">Learn More</a>
-                    </div>
-                </div>
+    <div class="program-img">
+        <img src="https://images.unsplash.com/photo-1521412644187-c49fa049e84d?auto=format&fit=crop&w=294&h=294&q=60&ixlib=rb-4.1.0" alt="College Sports">
+    </div>
+    <div class="program-content">
+        <h3>Sports & Physical Education</h3>
+        <p>Encouraging physical fitness, teamwork, and leadership through organized college-level sports activities.</p>
+        <div class="program-features">
+            <span>Cricket</span>
+            <span>Football</span>
+            <span>Volleyball</span>
+            <span>Basketball</span>
+            <span>Athletics</span>
+        </div>
+        <a href="#admission" class="btn btn-secondary">Learn More</a>
+    </div>
+</div>
+
             </div>
         </div>
     </section>
@@ -1659,35 +1720,50 @@
     </div>
     
     <!-- CTA SECTION -->
-    <section class="section cta-section" id="admission">
-        <div class="container">
-            <div class="cta-content" data-aos="zoom-in">
-                <h2>Admissions Open for 2025-26 Academic Year</h2>
-                <p>Secure your seat for the upcoming academic session. Limited seats available in Science, Commerce, and Arts streams.</p>
-                <div class="cta-buttons">
-                    <a href="admission.html" class="btn">Apply Online</a>
-                    <a href="#" class="btn btn-secondary">Download Brochure</a>
-                </div>
-            </div>
+   <section class="admission-wrapper">
+    <div class="admission-box">
+        <h2>Admissions Open for 2025–26 Academic Year</h2>
+        <p>
+            Secure your seat for the upcoming academic session.
+            Limited seats available in Science, Commerce, and Arts streams.
+        </p>
+
+        <div class="admission-buttons">
+            <a href="admission.html" class="btn btn-primary">Apply Online</a>
+            <a href="#brochure" class="btn btn-outline">Download Brochure</a>
         </div>
-    </section>
+    </div>
+</section>
+
     
     <!-- CONTACT SECTION -->
-    <div class="glass-section" data-aos="fade-up">
-        <section id="contact" class="container contact">
+   <div class="glass-section" data-aos="fade-up">
+    <section id="contact" class="contact-wrapper">
+        <div class="contact-card">
             <div class="section-title">
                 <h2>Contact Us</h2>
                 <p>Get in touch with us for more information</p>
             </div>
-            
+
             <form id="contactForm">
-                <input type="text" placeholder="Your Name" required aria-label="Your Name">
-                <input type="email" placeholder="Your Email" required aria-label="Your Email">
-                <textarea placeholder="Your Message" required aria-label="Your Message" rows="5"></textarea>
-                <button type="submit" class="btn" style="width: 100%;">Send Message</button>
+                <div class="form-row">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                </div>
+
+                <textarea placeholder="Your Message" rows="4" required></textarea>
+
+                <button type="submit" class="btn-submit">
+                    Send Message
+                </button>
             </form>
-        </section>
-    </div>
+        </div>
+    </section>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast">Message sent successfully ✅</div>
+
     
     <!-- LOCATION SECTION -->
     <div class="glass-section" data-aos="fade-up">
@@ -1742,7 +1818,7 @@
             
             <div class="footer-bottom">
                 <p>&copy; 2026 MDR PU College, Hiresindhogi. All Rights Reserved.</p>
-                <p>Developed with ❤️ for quality education</p>
+                <p>Developed By Shivappa for quality education</p>
             </div>
         </div>
     </footer>
@@ -1759,7 +1835,7 @@
         <ul class="mobile-nav-links">
             <li><a href="#" class="active">Home</a></li>
             <li><a href="#programs">Programs</a></li>
-            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
             <li><a href="admission.html">Admission</a></li>
             <li class="mobile-dropdown">
                 <button class="mobile-dropdown-toggle">More ▾</button>
@@ -1767,17 +1843,17 @@
                     <li><a href="alumni.html">Join As Alumni</a></li>
                     <li><a href="alumni-batches.html">View Alumni</a></li>
                     <li><a href="check-status.html">Application Status</a></li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="teacherinfo.html">Contact</a></li>
+                    <!--<li><a href="about.html">About Us</a></li>
+                    <li><a href="teacherinfo.html">Contact</a></li>-->
                 </ul>
             </li>
             <li><a href="#testimonials">Testimonials</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
         
-        <div class="mobile-menu-actions">
-            <a href="admin.html" class="btn">Admin</a>
-            <button type="button" class="btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">Dashboard</button>
+        <div class="mobile-menu-actions" >
+            <a href="admin.html" class="btn" style="background-color: #0d6efd;;">Admin</a>
+            <button type="button" class="btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop" style="background-color: #0d6efd;;">Dashboard</button>
         </div>
     </div>
     
@@ -2142,6 +2218,25 @@
                 }
             });
         });
+        
+        const form = document.getElementById("contactForm");
+const toast = document.getElementById("toast");
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    // show toast
+    toast.classList.add("show");
+
+    // reset form
+    form.reset();
+
+    // hide toast
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
+});
+
     </script>
 </body>
 </html>
