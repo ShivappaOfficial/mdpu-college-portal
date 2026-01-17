@@ -51,6 +51,7 @@
             background-color: var(--light);
             color: var(--dark);
             line-height: 1.6;
+            padding-top: 120px;
             transition: var(--transition);
             overflow-x: hidden;
             background-color: var(--highlight);
@@ -199,7 +200,7 @@
         
         .nav-links {
             display: flex;
-            gap: 20px;
+            gap: 10px;
             align-items: center;
         }
         
@@ -224,6 +225,21 @@
             position: relative;
         }
         
+        /* Desktop default */
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.mobile-menu-btn {
+    display: none;
+}
+
+/* Hide / move ticker when mobile menu is open */
+body.menu-open .latest-news {
+    top: -60px;           /* smoothly slides up */
+    transition: top 0.3s ease;
+}
         .dropdown-content {
             display: none;
             position: absolute;
@@ -275,65 +291,92 @@
         
         /* Latest News Ticker - Visible on ALL Devices */
         .latest-news {
-            display: flex;
-            overflow: hidden;
-            border-top: 2px solid var(--gray-light);
-            border-bottom: 2px solid var(--gray-light);
-            margin-top: 80px;
-   			background: linear-gradient(90deg,rgba(2, 0, 36, 1) 0%, rgba(9, 9, 121, 1) 9%, rgba(0, 212, 255, 1) 100%);
-            position: relative;
-            z-index: 10;
-           
-        }
-        
-        .latest-label {
-            background: #dc3545;
-            color: yellow;
-            font-weight: bold;
-            padding: 12px 25px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            font-size: 16px;
-        }
-        
-        .ticker {
-            background: transparent;
-            color: white;
-            flex: 1;
-            overflow: hidden;
-            white-space: nowrap;
-            padding: 12px 0;
-            padding-top: 22px;
-            position: relative;
-        }
-        
-        .ticker-content {
-            display: inline-block;
-            padding-left: 100%;
-            animation: ticker 50s linear infinite;
-        }
-        
-        @keyframes ticker {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
-        
-        .news-item {
-            display: inline-block;
-            margin-right: 60px;
-            font-size: 15px;
-            font-weight: 500;
-            padding: 5px 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            transition: var(--transition);
-        }
-        
-        .news-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
+    display: flex;
+    overflow: hidden;
+    background: linear-gradient(
+        90deg,
+        rgba(2, 0, 36, 1) 0%,
+        rgba(9, 9, 121, 1) 9%,
+        rgba(0, 212, 255, 1) 100%
+    );
+
+    position: fixed;          /* 🔥 FIXED */
+    top: 70px;                /* below header */
+    left: 0;
+    width: 100%;
+
+    z-index: 9999;
+    height: 50px;
+}
+
+/* Label */
+.latest-label {
+    background: #dc3545;
+    color: yellow;
+    font-weight: bold;
+    padding: 0 25px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+/* Ticker area */
+.ticker {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+}
+
+/* Moving content */
+.ticker-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: ticker 35s linear infinite;
+}
+
+/* Animation */
+@keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+/* News item */
+.news-item {
+    display: inline-block;
+    margin-right: 50px;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    transition: 0.3s ease;
+}
+
+.news-item:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .latest-news {
+        top: 60px;
+        height: 44px;
+    }
+
+    .latest-label {
+        font-size: 14px;
+        padding: 0 15px;
+    }
+
+    .news-item {
+        font-size: 14px;
+        margin-right: 35px;
+    }
+}
+
         
         .view-btn {
             background: var(--accent);
@@ -1237,8 +1280,24 @@ textarea {
             transform: scale(1.1);
         }
         
+        /* 🔥 FIX GAP BETWEEN HEADER & HERO (300px – 590px) */
+@media (max-width: 590px) {
+    body {
+        padding-top: 100px; /* reduced from 120px */
+    }
+
+    .latest-news {
+        top: 56px; /* align exactly below header */
+        height: 44px;
+    }
+
+    .hero-wrapper {
+        padding-top: 15px; /* reduce extra gap */
+    }
+}
+
         /* Hide Dashboard button on mobile */
-@media (max-width: 768px) {
+@media (max-width: 991px) {
     .dashboard-btn {
         display: none !important;
     }
@@ -1295,15 +1354,14 @@ textarea {
             }
         }
         
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-            }
-            
+       @media (max-width: 991px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: block;
+    }
             .hero h1 {
                 font-size: 40px;
             }
@@ -1426,6 +1484,25 @@ textarea {
                 font-size: 14px;
             }
         }
+        
+        /* 🔥 FIX: News ticker hidden between 991px–1230px */
+@media (min-width: 991px) and (max-width: 1230px) {
+
+    header {
+        height: 99px; /* lock header height */
+    }
+
+    .latest-news {
+        top: 99px;    /* push ticker below header */
+        height: 48px;
+        z-index: 999; /* below header but visible */
+    }
+
+    body {
+        padding-top: 120px; /* header + ticker space */
+    }
+}
+
     </style>
 </head>
 
@@ -1912,10 +1989,12 @@ textarea {
         
         mobileMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.add('active');
+             document.body.classList.add('menu-open'); // ✅ ADD
         });
         
         mobileMenuClose.addEventListener('click', () => {
             mobileMenu.classList.remove('active');
+             document.body.classList.remove('menu-open'); // ✅ ADD
         });
         
         // Mobile dropdown
@@ -1933,6 +2012,7 @@ textarea {
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
                 mobileMenu.classList.remove('active');
+                  document.body.classList.remove('menu-open'); // ✅ ADD
             });
         });
         
