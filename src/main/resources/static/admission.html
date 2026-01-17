@@ -129,6 +129,20 @@ button:disabled{opacity:.5;cursor:not-allowed}
 @media(max-width:768px){
   .grid{grid-template-columns:1fr}
 }
+
+#subjects .subject-row input:first-child{
+  background:#e5e7eb;
+  font-weight:600;
+}
+
+#subjects .subject-row input:last-child{
+  background:#fff;
+}
+
+#step2 h4{
+  margin-bottom:14px;
+}
+
 </style>
 </head>
 
@@ -288,11 +302,18 @@ function calc(){
 
 // ===== VALIDATION (NEW – SAFE) =====
 function validateStep2(){
-  let valid=true;
-  document.querySelectorAll("#step2 input[required], #step2 select").forEach(el=>{
-    if(!el.value) valid=false;
+  let valid = true;
+
+  // validate ONLY subject marks
+  ["kannada","english","hindi","maths","science","social"].forEach(id=>{
+    const el = document.getElementById(id);
+    if (!el.value || el.value === "0") valid = false;
   });
-  submitBtn.disabled=!valid;
+
+  // validate combination
+  if (!combination.value) valid = false;
+
+  submitBtn.disabled = !valid;
 }
 
 // ===== SUBMIT (100% SAME LOGIC) =====
