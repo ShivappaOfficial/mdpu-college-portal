@@ -1,6 +1,8 @@
 package com.sjprograming.restapi.news.model;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,7 +24,8 @@ public class News {
 
     private boolean pinned = false;
 
-    private LocalDateTime expiryDate;
+    @Column(name = "expiry_date")
+    private LocalDate expiryDate;   // ✅ IMPORTANT CHANGE
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
