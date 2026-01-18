@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+
 @Entity
 @Table(name = "news")
 public class News {
@@ -25,7 +26,7 @@ public class News {
     private boolean pinned = false;
 
     @Column(name = "expiry_date")
-    private LocalDate expiryDate;   // ✅ IMPORTANT CHANGE
+    private LocalDate expiryDate;  // ✅ IMPORTANT CHANGE
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

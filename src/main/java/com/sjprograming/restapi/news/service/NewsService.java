@@ -4,6 +4,7 @@ import com.sjprograming.restapi.news.model.News;
 import com.sjprograming.restapi.news.repository.NewsRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class NewsService {
 
     public List<News> getActiveNews() {
         return repo.findByExpiryDateIsNullOrExpiryDateAfterOrderByPinnedDescCreatedAtDesc(
-                LocalDateTime.now()
+        		 LocalDate.now()
         );
     }
 
