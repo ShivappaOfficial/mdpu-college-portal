@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>College News</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Segoe UI,system-ui;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#fff;
+}
+
+.card{
+  max-width:800px;
+  width:90%;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(14px);
+  border-radius:20px;
+  padding:30px;
+}
+
+h1{
+  margin-bottom:10px;
+}
+
+.date{
+  color:#22c55e;
+  font-size:14px;
+  margin-bottom:20px;
+}
+
+.content{
+  line-height:1.7;
+  font-size:16px;
+}
+
+.back{
+  margin-top:25px;
+  display:inline-block;
+  color:#22c55e;
+  text-decoration:none;
+  font-weight:600;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1 id="title">Loading...</h1>
+  <div class="date" id="date"></div>
+  <div class="content" id="content"></div>
+
+  <a href="index.html" class="back">← Back to Home</a>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+if(!id){
+  document.getElementById("title").innerText = "News not found";
+}
+
+fetch(`/api/news/public/${id}`)
+  .then(res => res.json())
+  .then(news => {
+    document.getElementById("title").innerText = news.title;
+    document.getElementById("content").innerText = news.content;
+
+    if(news.createdAt){
+      const d = new Date(news.createdAt);
+      document.getElementById("date").innerText =
+        "Published on " + d.toDateString();
+    }
+  })
+  .catch(() => {
+    document.getElementById("title").innerText = "Failed to load news";
+  });
+</script>
+
+</body>
+</html>

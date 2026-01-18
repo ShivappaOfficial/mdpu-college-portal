@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin News</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+  background:#0f2027;
+  color:#fff;
+  font-family:Segoe UI;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+.card{
+  width:100%;
+  max-width:500px;
+  background:#1e293b;
+  padding:20px;
+  border-radius:14px;
+}
+input,textarea{
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border-radius:10px;
+  border:none;
+}
+button{
+  width:100%;
+  padding:12px;
+  background:#22c55e;
+  border:none;
+  font-weight:bold;
+  border-radius:10px;
+}
+#msg{margin-top:10px;text-align:center}
+.error{color:#ef4444}
+.success{color:#22c55e}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>📰 Publish College News</h2>
+
+  <input id="title" placeholder="Title *">
+  <input id="shortDesc" placeholder="Short Description">
+  <textarea id="content" placeholder="Full Content *"></textarea>
+
+  <label>Expiry Date (optional)</label>
+  <input type="datetime-local" id="expiryDate">
+
+  <label>
+    <input type="checkbox" id="pinned"> 📌 Pin this news
+  </label>
+
+  <button onclick="publishNews()">🚀 Publish</button>
+  <div id="msg"></div>
+</div>
+
+<script>
+async function publishNews(){
+
+  const token = localStorage.getItem("token"); // 🔥 MUST be lowercase token
+
+  const msg = document.getElementById("msg");
+
+  if(!token){
+    msg.innerHTML = "❌ Admin login required";
+    msg.className = "error";
+    return;
+  }
+
+  const data = {
+    title: title.value.trim(),
+    shortDescription: shortDesc.value.trim(),
+    content: content.value.trim(),
+    pinned: pinned.checked,
+    expiryDate: expiryDate.value || null
+  };
+
+  if(!data.title || !data.content){
+    msg.innerHTML = "❌ Title & Content required";
+    msg.className = "error";
+    return;
+  }
+
+  try{
+    const res = await fetch("/api/news/admin",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer " + token
+      },
+      body:JSON.stringify(data)
+    });
+
+    if(!res.ok) throw await res.text();
+
+    msg.innerHTML = "✅ News published successfully";
+    msg.className = "success";
+
+  }catch(e){
+    msg.innerHTML = "❌ Access denied (Admin only)";
+    msg.className = "error";
+  }
+}
+</script>
+
+</body>
+</html>

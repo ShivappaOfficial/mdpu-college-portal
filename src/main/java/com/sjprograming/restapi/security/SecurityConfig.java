@@ -52,7 +52,10 @@ public class SecurityConfig {
                     "/alumni-list.html",
                     "/alumni-batches.html",
                     "/admin-gallery.html",
-                    "/check-status.html"
+                    "/check-status.html",
+                    "/admin-news.html",
+                    "/news-view.html",
+                    "/admin-news-list.html"
                 ).permitAll()
 
                 // ===== AUTH =====
@@ -75,6 +78,9 @@ public class SecurityConfig {
              // PUBLIC ADMISSION APIs
                 .requestMatchers(HttpMethod.POST, "/api/admission/apply").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/admission/status").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/news/public").permitAll()
+                .requestMatchers("/api/news/public/**").permitAll()
+                .requestMatchers("/api/news/admin/**").authenticated()
 
                 // ===== ADMIN =====
                 .requestMatchers(HttpMethod.POST, "/api/batches/create").authenticated()

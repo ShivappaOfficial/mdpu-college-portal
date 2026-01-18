@@ -2123,29 +2123,55 @@ textarea {
             });
         });
         
-        // Latest News Ticker - VISIBLE ON ALL DEVICES
-        const latestNews = [
-            { title: "🎓 Online Admissions Portal Open for 2026-27", subject: "Admissions", link: "#" },
-            { title: "⚽ Annual Sports Day 2026 - March 5th", subject: "Events", link: "#" },
-            { title: "🏆 Science Exhibition Winners - State Level 1st Prize", subject: "Achievements", link: "#" },
-            { title: "💻 New Computer Lab Inaugurated with 50+ Systems", subject: "Infrastructure", link: "#" },
-            { title: "📚 Scholarship Applications Open - Apply Now", subject: "Opportunities", link: "#" },
-            { title: "👨‍🏫 Parent-Teacher Meeting - February 25th", subject: "Events", link: "#" }
-        ];
-        
-        const ticker = document.getElementById('latestNotesTicker');
-        if (latestNews.length > 0) {
-            // Duplicate news for seamless scrolling
-            [...latestNews, ...latestNews].forEach(news => {
-                const span = document.createElement('span');
-                span.className = 'news-item';
-                span.innerHTML = `
-                    ${news.title}
-                    ${news.link ? `<a href="${news.link}" class="view-btn" target="_blank" aria-label="View ${news.title}">View</a>` : ''}
-                `;
-                ticker.appendChild(span);
-            });
-        }
+       function publishNews() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Session expired. Please login again.");
+    window.location.href = "admin.html";
+    return;
+  }
+
+  const title = document.getElementById("title").value.trim();
+  const shortDescription = document.getElementById("shortDesc").value.trim();
+  const content = document.getElementById("content").value.trim();
+  const expiryDate = document.getElementById("expiryDate").value;
+
+  if (!title || !content) {
+    alert("Title and content are required");
+    return;
+  }
+
+  fetch("/api/news", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token   // 🔥 THIS WAS MISSING
+    },
+    body: JSON.stringify({
+      title,
+      shortDescription,
+      content,
+      expiryDate
+    })
+  })
+  .then(res => {
+    if (!res.ok) throw "Unauthorized";
+    return res.json();
+  })
+  .then(() => {
+    alert("✅ News published successfully");
+
+    // clear form
+    document.getElementById("title").value = "";
+    document.getElementById("shortDesc").value = "";
+    document.getElementById("content").value = "";
+    document.getElementById("expiryDate").value = "";
+  })
+  .catch(() => {
+    alert("❌ Failed to publish news (403)");
+  });
+}
         
         // Back to Top
         const backToTop = document.getElementById('backToTop');
@@ -2272,39 +2298,8 @@ textarea {
             });
         }
         
-        // News Detail Function
-        function showNewsDetail(newsId) {
-            const newsItems = [
-                {
-                    title: "Online Admissions Portal Open",
-                    date: "Feb 15, 2026",
-                    content: "The online admissions portal for the 2026-27 academic year is now live. Students can register, fill out applications, and submit required documents through our secure online platform. Early applicants will receive priority consideration.",
-                    link: "#"
-                },
-                {
-                    title: "Annual Sports Day 2026",
-                    date: "Feb 10, 2026",
-                    content: "Our Annual Sports Day is scheduled for March 5th, 2026. The event will feature various athletic competitions, cultural performances, and special guest appearances. All students are encouraged to participate.",
-                    link: "#"
-                },
-                {
-                    title: "Science Exhibition Winners",
-                    date: "Feb 5, 2026",
-                    content: "Our student team secured first prize at the State Level Science Fair for their innovative project on sustainable energy solutions. The project impressed judges with its practical application and environmental impact.",
-                    link: "#"
-                },
-                {
-                    title: "New Computer Lab Inaugurated",
-                    date: "Jan 28, 2026",
-                    content: "A state-of-the-art computer lab with 50+ high-performance systems has been inaugurated. The lab features the latest software, high-speed internet, and advanced learning tools to enhance digital literacy.",
-                    link: "#"
-                }
-            ];
-            
-            const news = newsItems[newsId - 1];
-            alert(`${news.title}\n\nDate: ${news.date}\n\n${news.content}\n\nClick OK to learn more.`);
-        }
-        
+       
+               
         // Set active nav link on scroll
         window.addEventListener('scroll', () => {
             const sections = document.querySelectorAll('section, .glass-section');
@@ -2346,6 +2341,47 @@ form.addEventListener("submit", function(e) {
     }, 3000);
 });
 
+
+async function loadLatestNews() {
+    const ticker = document.getElementById("latestNotesTicker");
+    if (!ticker) return;
+
+    ticker.innerHTML = "";
+
+    try {
+        const res = await fetch("/api/news/public");
+        if (!res.ok) throw new Error("Failed to load news");
+
+        const newsList = await res.json();
+
+        if (newsList.length === 0) {
+            ticker.innerHTML = "<span class='news-item'>No updates available</span>";
+            return;
+        }
+
+        // Duplicate for smooth scrolling
+        [...newsList, ...newsList].forEach(news => {
+            const span = document.createElement("span");
+            span.className = "news-item";
+
+            span.innerHTML = `
+                📌 ${news.title}
+                <a href="news-view.html?id=${news.id}"
+                   class="view-btn"
+                   target="_blank">View</a>
+            `;
+
+            ticker.appendChild(span);
+        });
+
+    } catch (err) {
+        console.error("Error loading news:", err);
+        ticker.innerHTML = "<span class='news-item'>Unable to load updates</span>";
+    }
+}
+
+/* 🔥 CALL IT ON PAGE LOAD */
+document.addEventListener("DOMContentLoaded", loadLatestNews);
     </script>
 </body>
 </html>
