@@ -51,6 +51,7 @@ function upload(){
   .then(() => {
     loadGallery();
     document.getElementById("file").value = "";
+    alert("Image Uploaded Succesfully");
   })
   .catch(err => alert(err.message));
 }

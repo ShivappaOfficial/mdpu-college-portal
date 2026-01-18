@@ -116,20 +116,68 @@ public class EmailService {
             String mobile
     ) {
         return """
-        <html>
-        <body style="font-family:Arial">
-          <h2>Dear %s,</h2>
-          <p>Your admission application has been successfully received.</p>
-          <p><b>Admission ID:</b> %s</p>
-          <p><b>Course:</b> %s</p>
-          <p><b>Mobile:</b> %s</p>
-          <br>
-          <p>Our admission team will contact you shortly.</p>
-          <br>
-          <b>MDR PU College</b><br>
-          Hiresindhogi, Karnataka
-        </body>
-        </html>
+       <html>
+<body style="font-family: Arial, sans-serif; line-height:1.6">
+
+<h2>Dear %s,</h2>
+
+<p>
+We are delighted to inform you that your admission application has been
+<strong>received successfully</strong>.
+</p>
+
+<p>
+<b>Admission ID:</b> %s<br>
+<b>Course:</b> %s<br>
+<b>Mobile:</b> %s
+</p>
+
+<hr>
+
+<p>
+🎓 <strong>Welcome to the beginning of a bright academic journey!</strong>
+</p>
+
+<p>
+At <b>MDR PU Science College</b>, we believe that every student has the potential
+to achieve excellence. Our institution is committed to providing
+<strong>quality education, strong academic foundations, and holistic development</strong>
+to help you succeed in both academics and life.
+</p>
+
+<p>
+By choosing MDR PU College, you are stepping into an environment that
+encourages curiosity, innovation, discipline, and confidence.
+Our experienced faculty, modern infrastructure, and student-friendly campus
+are designed to support your dreams and aspirations.
+</p>
+
+<p>
+We strongly encourage you to stay focused, motivated, and passionate about
+your goals. Your dedication combined with our guidance will help you build
+a strong future and open doors to higher education and career opportunities.
+</p>
+
+<p>
+📞 Our admission team will contact you shortly with further details
+regarding the next steps in the admission process.
+</p>
+
+<p>
+If you have any questions or need assistance, please feel free to reach out to us.
+We are always happy to support you.
+</p>
+
+<br>
+
+<p>
+<b>MDR PU College</b><br>
+Hiresindhogi, Karnataka
+</p>
+
+</body>
+</html>
+
         """.formatted(name, admissionId, course, mobile);
     }
 

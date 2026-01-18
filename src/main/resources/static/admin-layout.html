@@ -125,6 +125,12 @@ iframe {
         display: inline-block;
     }
 }
+/* Hide public website navbar in admin pages */
+body.admin-page header,
+body.admin-page .latest-news {
+    display: none !important;
+}
+
 </style>
 </head>
 
@@ -185,6 +191,7 @@ if (!localStorage.getItem("token")) {
         <i class="bi bi-stack"></i> Admin Batches
     </a>
 </div>
+<body class="admin-page">
 
 <!-- MAIN -->
 <div class="content">
