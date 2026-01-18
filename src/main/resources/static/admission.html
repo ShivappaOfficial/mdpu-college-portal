@@ -26,97 +26,19 @@ body{
   border-radius:18px;padding:22px;
 }
 h2{text-align:center;margin-bottom:12px}
-
-/* ===== STEP DOTS ===== */
-.step-dots{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin-bottom:10px;
-}
-.step-dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:#94a3b8;
-  transition:.3s;
-}
-.step-dot.active{
-  background:var(--success);
-  transform:scale(1.3);
-}
-
-/* ===== PROGRESS ===== */
-.progress{
-  height:8px;
-  background:rgba(255,255,255,.2);
-  border-radius:10px;
-  overflow:hidden;
-  margin-bottom:18px
-}
-.progress-bar{
-  height:100%;
-  width:50%;
-  background:linear-gradient(90deg,var(--primary),var(--success));
-  transition:.3s
-}
-
-/* ===== FORM ===== */
+.progress{height:8px;background:rgba(255,255,255,.2);border-radius:10px;overflow:hidden;margin-bottom:18px}
+.progress-bar{height:100%;width:50%;background:linear-gradient(90deg,var(--primary),var(--success));transition:.3s}
 .step{display:none}
 .step.active{display:block}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-
-/* ===== FLOATING LABEL ===== */
-.field{
-  position:relative;
-}
-.field input,
-.field select{
-  width:100%;
-  padding:14px 12px;
-  border-radius:10px;
-  border:none;
-  outline:none;
-}
-.field label{
-  position:absolute;
-  left:12px;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:14px;
-  color:#64748b;
-  pointer-events:none;
-  transition:.25s;
-  background:#fff;
-  padding:0 6px;
-}
-.field input:focus+label,
-.field input:not(:placeholder-shown)+label,
-.field select:focus+label,
-.field select:not([value=""])+label{
-  top:-6px;
-  font-size:12px;
-  color:var(--primary);
-}
-
+input,select{padding:12px;border-radius:10px;border:none;outline:none}
 input[readonly]{background:#e5e7eb}
 .subject-row{display:flex;gap:10px;margin-bottom:10px}
 .subject-row input{flex:1}
-
 .btns{display:flex;justify-content:space-between;margin-top:20px}
-button{
-  padding:12px 22px;
-  border:none;
-  border-radius:12px;
-  background:var(--primary);
-  color:white;
-  font-weight:600;
-  cursor:pointer
-}
+button{padding:12px 22px;border:none;border-radius:12px;background:var(--primary);color:white;font-weight:600;cursor:pointer}
 button.secondary{background:var(--muted)}
 button.loading{background:var(--muted);cursor:not-allowed;opacity:.85}
-button:disabled{opacity:.5;cursor:not-allowed}
-
 #alertBox{
   position:fixed;top:20px;right:20px;
   padding:14px 18px;border-radius:14px;
@@ -125,24 +47,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .alert-success{background:var(--success)}
 .alert-error{background:var(--error)}
 .alert-info{background:#3b82f6}
-
-@media(max-width:768px){
-  .grid{grid-template-columns:1fr}
-}
-
-#subjects .subject-row input:first-child{
-  background:#e5e7eb;
-  font-weight:600;
-}
-
-#subjects .subject-row input:last-child{
-  background:#fff;
-}
-
-#step2 h4{
-  margin-bottom:14px;
-}
-
+@media(max-width:768px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -153,12 +58,6 @@ button:disabled{opacity:.5;cursor:not-allowed}
 <div class="card">
 <h2>🎓 PU College Admission</h2>
 
-<!-- STEP DOTS -->
-<div class="step-dots">
-  <span class="step-dot active" id="dot1"></span>
-  <span class="step-dot" id="dot2"></span>
-</div>
-
 <div class="progress">
   <div class="progress-bar" id="progressBar"></div>
 </div>
@@ -168,52 +67,15 @@ button:disabled{opacity:.5;cursor:not-allowed}
 <!-- STEP 1 -->
 <div class="step active" id="step1">
   <div class="grid">
-
-    <div class="field">
-      <input id="name" required placeholder=" ">
-      <label>Student Name *</label>
-    </div>
-
-    <div class="field">
-      <input id="fatherName" required placeholder=" ">
-      <label>Father Name *</label>
-    </div>
-
-    <div class="field">
-      <input id="motherName" required placeholder=" ">
-      <label>Mother Name *</label>
-    </div>
-
-    <div class="field">
-      <input type="date" id="dob" required>
-      <label>DOB *</label>
-    </div>
-
-    <div class="field">
-      <input id="mobile" required placeholder=" ">
-      <label>Mobile *</label>
-    </div>
-
-    <div class="field">
-      <input id="familyMobile" placeholder=" ">
-      <label>Family Mobile</label>
-    </div>
-
-    <div class="field">
-      <input type="email" id="email" required placeholder=" ">
-      <label>Email *</label>
-    </div>
-
-    <div class="field">
-      <input id="satsId" required placeholder=" ">
-      <label>SATS ID *</label>
-    </div>
-
-    <div class="field">
-      <input id="sslcRegNo" required placeholder=" ">
-      <label>SSLC Reg No *</label>
-    </div>
-
+    <input id="name" placeholder="Student Name *" required>
+    <input id="fatherName" placeholder="Father Name *" required>
+    <input id="motherName" placeholder="Mother Name *" required>
+    <input type="date" id="dob" required>
+    <input id="mobile" placeholder="Mobile *" required>
+    <input id="familyMobile" placeholder="Family Mobile">
+    <input type="email" id="email" placeholder="Email *" required>
+    <input id="satsId" placeholder="SATS ID *" required>
+    <input id="sslcRegNo" placeholder="SSLC Reg No *" required>
   </div>
 
   <div class="btns">
@@ -227,19 +89,19 @@ button:disabled{opacity:.5;cursor:not-allowed}
 <h4>📚 Subject-wise Marks</h4>
 
 <div id="subjects">
-  <div class="subject-row"><input value="Kannada" readonly><input id="kannada" type="number" oninput="calc();validateStep2()" required></div>
-  <div class="subject-row"><input value="English" readonly><input id="english" type="number" oninput="calc();validateStep2()" required></div>
-  <div class="subject-row"><input value="Hindi" readonly><input id="hindi" type="number" oninput="calc();validateStep2()" required></div>
-  <div class="subject-row"><input value="Mathematics" readonly><input id="maths" type="number" oninput="calc();validateStep2()" required></div>
-  <div class="subject-row"><input value="Science" readonly><input id="science" type="number" oninput="calc();validateStep2()" required></div>
-  <div class="subject-row"><input value="Social Science" readonly><input id="social" type="number" oninput="calc();validateStep2()" required></div>
+  <div class="subject-row"><input value="Kannada" readonly><input id="kannada" type="number" oninput="calc()" required></div>
+  <div class="subject-row"><input value="English" readonly><input id="english" type="number" oninput="calc()" required></div>
+  <div class="subject-row"><input value="Hindi" readonly><input id="hindi" type="number" oninput="calc()" required></div>
+  <div class="subject-row"><input value="Mathematics" readonly><input id="maths" type="number" oninput="calc()" required></div>
+  <div class="subject-row"><input value="Science" readonly><input id="science" type="number" oninput="calc()" required></div>
+  <div class="subject-row"><input value="Social Science" readonly><input id="social" type="number" oninput="calc()" required></div>
 </div>
 
 <div class="grid" style="margin-top:14px">
   <input id="obtainedMarks" placeholder="Total Obtained Marks" readonly>
   <input id="totalMarks" value="625" readonly>
   <input id="percentage" placeholder="Percentage" readonly>
-  <select id="combination" required onchange="validateStep2()">
+  <select id="combination" required>
     <option value="">Select Combination</option>
     <option>PCMB</option>
     <option>PCMC</option>
@@ -248,7 +110,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
 
 <div class="btns">
   <button type="button" class="secondary" onclick="prevStep()">← Back</button>
-  <button type="submit" id="submitBtn" disabled>🚀 Submit Application</button>
+  <button type="submit" id="submitBtn">🚀 Submit Application</button>
 </div>
 </div>
 
@@ -256,7 +118,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
 </div>
 
 <script>
-// ===== ELEMENT BINDING (UNCHANGED) =====
+// ===== ELEMENT BINDING (CRITICAL FIX) =====
 const elName = document.getElementById("name");
 const elFatherName = document.getElementById("fatherName");
 const elMotherName = document.getElementById("motherName");
@@ -274,23 +136,19 @@ function showAlert(msg,type){
   setTimeout(()=>a.style.display="none",3000);
 }
 
-// ===== STEPS (ENHANCED VISUAL ONLY) =====
+// ===== STEPS =====
 function nextStep(){
   step1.classList.remove("active");
   step2.classList.add("active");
   progressBar.style.width="100%";
-  dot1.classList.remove("active");
-  dot2.classList.add("active");
 }
 function prevStep(){
   step2.classList.remove("active");
   step1.classList.add("active");
   progressBar.style.width="50%";
-  dot2.classList.remove("active");
-  dot1.classList.add("active");
 }
 
-// ===== MARKS (UNCHANGED) =====
+// ===== MARKS =====
 function calc(){
   let sum=0;
   document.querySelectorAll("#subjects input[type=number]").forEach(i=>{
@@ -300,30 +158,42 @@ function calc(){
   percentage.value=sum?((sum/625)*100).toFixed(2):"";
 }
 
-// ===== VALIDATION (NEW – SAFE) =====
-function validateStep2(){
-  let valid = true;
-
-  // validate ONLY subject marks
-  ["kannada","english","hindi","maths","science","social"].forEach(id=>{
-    const el = document.getElementById(id);
-    if (!el.value || el.value === "0") valid = false;
-  });
-
-  // validate combination
-  if (!combination.value) valid = false;
-
-  submitBtn.disabled = !valid;
-}
-
-// ===== SUBMIT (100% SAME LOGIC) =====
+// ===== SUBMIT =====
 admissionForm.onsubmit=async e=>{
   e.preventDefault();
   submitBtn.classList.add("loading");
   submitBtn.disabled=true;
   showAlert("Submitting application…","info");
 
-  const data={ /* unchanged payload */ };
+  const data={
+    name: elName.value.trim(),
+    fatherName: elFatherName.value.trim(),
+    motherName: elMotherName.value.trim(),
+    dob: dob.value,
+
+    mobile: elMobile.value.trim(),
+    familyMobile: familyMobile.value,
+    email: elEmail.value.trim(),
+
+    satsId: elSatsId.value.trim(),
+    sslcRegNo: elSslcRegNo.value.trim(),
+
+    kannada:+kannada.value,
+    english:+english.value,
+    hindi:+hindi.value,
+    mathematics:+maths.value,
+    science:+science.value,
+    socialScience:+social.value,
+
+    obtainedMarks:+obtainedMarks.value,
+    totalMarks:+totalMarks.value,
+    percentage:+percentage.value,
+    combination:combination.value,
+
+    permanentAddress:"NA",
+    residentialAddress:"NA",
+    others:"{}"
+  };
 
   try{
     const res=await fetch("/api/admission/apply",{
@@ -345,3 +215,4 @@ admissionForm.onsubmit=async e=>{
 
 </body>
 </html>
+
