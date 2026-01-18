@@ -53,8 +53,22 @@ public class News {
     public boolean isPinned() { return pinned; }
     public void setPinned(boolean pinned) { this.pinned = pinned; }
 
-    public LocalDateTime getExpiryDate() { return expiryDate; }
-    public void setExpiryDate(LocalDateTime expiryDate) { this.expiryDate = expiryDate; }
+  
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDate getExpiryDate() {
+		return expiryDate;
+	}
+
+
+	public void setExpiryDate(LocalDate expiryDate) {
+		this.expiryDate = expiryDate;
+	}
+
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+
+	public LocalDateTime getCreatedAt() { return createdAt; }
 }
