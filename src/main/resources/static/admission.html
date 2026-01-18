@@ -400,10 +400,19 @@ admissionForm.onsubmit=async e=>{
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(data)
     });
-    if(!res.ok) throw await res.text();
-    const result=await res.json();
-    showAlert("✅ Submitted<br>ID: "+result.admissionId,"success");
-    setTimeout(()=>location.href="check-status.html",2000);
+   if(!res.ok) throw await res.text();
+const result = await res.json();
+
+showAlert(
+  "✅ <b>Application Submitted Successfully!</b><br><br>" +
+  "<b>Admission ID:</b> " + result.admissionId + "<br><br>" +
+  "📧 A confirmation email has been sent to your <b>registered email address</b>.<br>" +
+  "Please check your <b>Inbox</b>. If you do not find it, kindly check your <b>Spam / Junk</b> folder.",
+  "success"
+);
+
+setTimeout(() => location.href = "check-status.html", 4000);
+
   }catch(err){
     showAlert("❌ "+err,"error");
     submitBtn.disabled=false;
