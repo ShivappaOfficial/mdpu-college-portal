@@ -18,6 +18,140 @@ body{
   margin:0;
 }
 
+/* ===== NAV ROOT ===== */
+.main-header{
+  position:fixed;
+  top:0;
+  width:100%;
+  background:#004080;
+  z-index:9999;
+}
+.nav-container{
+  max-width:1400px;
+  margin:auto;
+  padding:12px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+/* LOGO */
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#fff;
+  text-decoration:none;
+}
+.logo-icon{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#fff;
+  color:#004080;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+.logo-text h1{font-size:18px;margin:0}
+.logo-text p{font-size:12px;margin:0}
+
+/* DESKTOP NAV */
+.desktop-nav{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+.desktop-nav a,
+.desktop-nav span{
+  color:#fff;
+  padding:8px 14px;
+  border-radius:20px;
+  text-decoration:none;
+  cursor:pointer;
+}
+.desktop-nav a:hover,
+.desktop-nav a.active{
+  background:#00cc99;
+  color:#000;
+}
+
+/* DROPDOWN */
+.dropdown{position:relative}
+.dropdown-menu{
+  display:none;
+  position:absolute;
+  top:100%;
+  left:0;
+  background:#003366;
+  list-style:none;
+  padding:8px 0;
+  border-radius:8px;
+  min-width:180px;
+}
+.dropdown-menu li a{
+  display:block;
+  padding:8px 15px;
+}
+.dropdown:hover .dropdown-menu{display:block}
+
+/* ADMIN */
+.admin-btn{
+  background:rgb(0, 128, 255);
+  color:#000!important;
+}
+
+/* MOBILE */
+.hamburger{
+  display:none;
+  background:none;
+  border:none;
+  font-size:26px;
+  color:#fff;
+}
+
+/* MOBILE MENU */
+.mobile-menu{
+  position:fixed;
+  top:0;
+  right:-100%;
+  width:280px;
+  height:100%;
+  background:#004080;
+  padding:70px 20px;
+  transition:.3s;
+  z-index:10000;
+}
+.mobile-menu.active{right:0}
+.mobile-menu a{
+  display:block;
+  color:#fff;
+  padding:12px 0;
+  text-decoration:none;
+  border-bottom:1px solid rgba(255,255,255,.2);
+}
+.mobile-admin{
+  margin-top:15px;
+  text-align:center;
+}
+.close-menu{
+  position:absolute;
+  top:15px;
+  right:15px;
+  background:none;
+  border:none;
+  font-size:24px;
+  color:#fff;
+  cursor:pointer;
+}
+
+/* RESPONSIVE */
+@media(max-width:992px){
+  .desktop-nav{display:none}
+  .hamburger{display:block}
+}
+
 .card{
   background:rgba(255,255,255,0.15);
   backdrop-filter:blur(14px);
@@ -76,6 +210,60 @@ button:disabled{
 </head>
 
 <body>
+<!-- ================= HEADER ================= -->
+<header class="main-header">
+  <div class="nav-container">
+
+    <!-- LOGO -->
+    <a href="index.html" class="logo">
+      <div class="logo-icon">MDR</div>
+      <div class="logo-text">
+        <h1>MDR PU Science College</h1>
+        <p>Hiresindhogi | Excellence in Education</p>
+      </div>
+    </a>
+
+    <!-- DESKTOP NAV -->
+    <nav class="desktop-nav">
+      <a href="index.html">Home</a>
+      <a href="index.html#programs">Programs</a>
+      <a href="gallery.html">Gallery</a>
+      <a href="admission.html">Admission</a>
+
+      <div class="dropdown">
+        <span>More ▾</span>
+        <ul class="dropdown-menu">
+          <li><a href="#alumni" class="active">Join As Alumni</a></li>
+          <li><a href="alumni-batches.html">View Alumni</a></li>
+          <li><a href="check-status.html">Application Status</a></li>
+        </ul>
+      </div>
+
+      <a href="admin.html" class="admin-btn">Admin</a>
+    </nav>
+
+    <!-- MOBILE BUTTON -->
+    <button class="hamburger" id="openMenu">
+      ☰
+    </button>
+
+  </div>
+</header>
+
+<!-- ================= MOBILE MENU ================= -->
+<div class="mobile-menu" id="mobileMenu">
+
+  <button class="close-menu" id="closeMenu">✖</button>
+
+  <a href="index.html">Home</a>
+  <a href="index.html#programs">Programs</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="admission.html">Admission</a>
+  <a href="alumni.html">Join As Alumni</a>
+  <a href="check-status.html">Application Status</a>
+
+  <a href="admin.html" class="admin-btn mobile-admin">Admin</a>
+</div>
 
 <div class="card">
   <h2>Alumni Registration</h2>
@@ -98,12 +286,26 @@ button:disabled{
 <div class="popup" id="popup">
   <div class="popup-content">
     <h3>✅ Submitted Successfully</h3>
-    <p>Await admin approval.</p>
+    <p>Await For Admin Approval.</p>
+    	<p>Once Admin Approved Your Details </p>
+    	<p>Then Only It Will Show It In View Alumni Page.</p>
     <button onclick="closePopup()">OK</button>
   </div>
 </div>
 
 <script>
+	
+const mobileMenu = document.getElementById("mobileMenu");
+document.getElementById("openMenu").onclick = () => {
+  mobileMenu.classList.add("active");
+};
+document.getElementById("closeMenu").onclick = () => {
+  mobileMenu.classList.remove("active");
+};
+document.querySelectorAll(".mobile-menu a").forEach(link=>{
+  link.onclick = () => mobileMenu.classList.remove("active");
+});
+
 const form = document.getElementById("alumniForm");
 const errorBox = document.getElementById("error");
 const btn = document.getElementById("submitBtn");

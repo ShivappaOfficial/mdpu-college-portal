@@ -149,10 +149,10 @@
             top: 0;
             left: 0;
             width: 100%;
-            z-index: 1000;
             padding: 15px 0;
             background: var(--primary);
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+             z-index: 30000; /* 🔥 higher than news */
         }
         
         .header-container {
@@ -225,6 +225,11 @@
             position: relative;
         }
         
+        .dropdown-content {
+    position: absolute;
+    z-index: 30001; /* 🔥 above everything */
+        box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+}
         /* Desktop default */
 .nav-links {
     display: flex;
@@ -290,7 +295,7 @@ body.menu-open .latest-news {
         }
         
         /* Latest News Ticker - Visible on ALL Devices */
-        .latest-news {
+       .latest-news {
     display: flex;
     overflow: hidden;
     background: linear-gradient(
@@ -300,13 +305,13 @@ body.menu-open .latest-news {
         rgba(0, 212, 255, 1) 100%
     );
 
-    position: fixed;          /* 🔥 FIXED */
-    top: 70px;                /* below header */
+    position: fixed;
+    top: 95px;
     left: 0;
     width: 100%;
-
-    z-index: 9999;
     height: 50px;
+
+    z-index: 20000; /* 👈 LOWER */
 }
 
 /* Label */
@@ -362,7 +367,7 @@ body.menu-open .latest-news {
 
 @media (max-width: 768px) {
     .latest-news {
-        top: 60px;
+        top: 90px;
         height: 44px;
     }
 
@@ -1536,7 +1541,7 @@ textarea {
                     </div>
                     <!--<a href="#testimonials">Testimonials</a>-->
                     <!--<a href="#contact">Contact</a>-->
-                     <a href="admin.html" class="btn" style="background-color: var(--yellow);
+                     <a href="admin.html" class="btn" style="background-color: var(--secondary);
             color: var(--dark);">Admin</a>
                 </div>
                 
@@ -1909,6 +1914,7 @@ textarea {
             <i class="fas fa-times"></i>
         </button>
         
+        
         <ul class="mobile-nav-links">
             <li><a href="#" class="active">Home</a></li>
             <li><a href="#programs">Programs</a></li>
@@ -1935,9 +1941,9 @@ textarea {
     </div>
     
     <!-- Offcanvas Dashboard -->
-    <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" style="height: 100%;">
+    <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel" style="height: 50%; top: 140px;">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasTopLabel">College Dashboard</h5>
+            <h5 class="offcanvas-title" id="offcanvasTopLabel" >College Dashboard</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
